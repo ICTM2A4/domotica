@@ -71,8 +71,13 @@ public class Login extends JFrame implements ActionListener {
 
             if (!"".equals(jtUsername.getText())&& !"".equals(jpPassword.getPassword())){
                 JOptionPane.showMessageDialog(this, "U bent succesvol ingelogd");
-                System.out.println(jtUsername.getText());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
-                System.out.println(jpPassword.getPassword());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
+                setVisible(false);
+                //System.out.println(jtUsername.getText());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
+                //System.out.println(jpPassword.getPassword());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
+
+                // succes login, change screen to main screen
+                MainScreenFrame mainScreenFrame = new MainScreenFrame();
+                mainScreenFrame.setVisible(true);
             }
 
             else if(0 == 0){                                 //wordt uiteindelijk vervangen voor een voorwaarde die checkt of de gegevens kloppen.
