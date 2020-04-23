@@ -1,7 +1,7 @@
 package nl.ictm4a.domotica;
 
-import com.mysql.cj.protocol.Resultset;
 
+import com.mysql.cj.protocol.Resultset;
 import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +21,7 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-        Login login = new Login();
+      Login login = new Login();
     }
 
 }
