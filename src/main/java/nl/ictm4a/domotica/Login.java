@@ -9,6 +9,7 @@ public class Login extends JFrame implements ActionListener {
     private JButton jbLogin, jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
+    Login login;
 
     public Login() {
         setTitle("Inloggen centrale PC-applicatie");
@@ -82,7 +83,7 @@ public class Login extends JFrame implements ActionListener {
             dispose();                                      //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de gebruiker terug gaat naar het hoofdmenu.
         }
         if(e.getSource() == jbRegister){
-            Register rg = new Register();
+            Register rg = new Register(login);
             rg.setVisible(true);
         }
 

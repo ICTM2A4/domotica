@@ -5,20 +5,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Register extends JFrame implements ActionListener {
+public class Register extends JDialog implements ActionListener {
 
     private JButton jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
 
-    public Register() {
+    public Register(JFrame parent) {
+        super(parent, true);
         setTitle("Registreren centrale PC-applicatie");
         setSize(280,200);
         GridBagConstraints gbc = new GridBagConstraints();
         setResizable(false);
         setLayout(new GridBagLayout());
         gbc.insets = new Insets(1, 1,2,1);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JLabel jlUsername = new JLabel("Gebruikersnaam");
         gbc.gridx = 0;
         gbc.gridy = 0;
