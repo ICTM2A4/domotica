@@ -4,14 +4,14 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Login extends JFrame implements ActionListener {
+public class LoginFrame extends JFrame implements ActionListener {
 
     private JButton jbLogin, jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
-    Login login;
+    LoginFrame loginFrame;
 
-    public Login() {
+    public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
         setSize(250,250);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -65,11 +65,11 @@ public class Login extends JFrame implements ActionListener {
             if(jtUsername.getText().equals("")){
                 JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");
             }
-            if(jpPassword.getPassword().equals("")){
+            else if(jpPassword.getPassword().length == 0){
                 JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
             }
 
-            if (!"".equals(jtUsername.getText())&& !"".equals(jpPassword.getPassword())){
+            else if (!"".equals(jtUsername.getText())&& 0!=jpPassword.getPassword().length){
                 JOptionPane.showMessageDialog(this, "U bent succesvol ingelogd");
                 setVisible(false);
                 //System.out.println(jtUsername.getText());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
@@ -80,7 +80,7 @@ public class Login extends JFrame implements ActionListener {
                 mainScreenFrame.setVisible(true);
             }
 
-            else if(0 == 0){                                 //wordt uiteindelijk vervangen voor een voorwaarde die checkt of de gegevens kloppen.
+           else{                                 //wordt uiteindelijk vervangen voor een voorwaarde die checkt of de gegevens kloppen.
                 JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");
             }
         }
@@ -88,7 +88,7 @@ public class Login extends JFrame implements ActionListener {
             dispose();                                      //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de gebruiker terug gaat naar het hoofdmenu.
         }
         if(e.getSource() == jbRegister){
-            Register rg = new Register(login);
+            RegisterDialog rg = new RegisterDialog(loginFrame);
             rg.setVisible(true);
         }
 

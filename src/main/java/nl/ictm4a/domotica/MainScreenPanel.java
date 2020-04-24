@@ -11,6 +11,7 @@ public class MainScreenPanel extends JPanel implements ActionListener {
     private boolean jlHeatingStatus, jlLightingStatus;
     private JButton jbSettings, jbMusicPlayer;
     MainScreenFrame mainScreenFrame;
+    MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame();
 
     public MainScreenPanel() {
         setLayout(new GridBagLayout());
@@ -87,5 +88,16 @@ public class MainScreenPanel extends JPanel implements ActionListener {
             SettingsDialog settingsDialog = new SettingsDialog(mainScreenFrame);
             settingsDialog.setVisible(true);
         }
+        if(e.getSource().equals(jbMusicPlayer)){
+
+            if(!musicPlayerFrame.isVisible()){
+
+                musicPlayerFrame.setVisible(true);
+            }
+
+
+
+        }
+
     }
 }

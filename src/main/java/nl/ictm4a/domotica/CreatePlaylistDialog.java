@@ -11,7 +11,6 @@ public class CreatePlaylistDialog extends JDialog implements ActionListener {
     JTextField jtfPlaylistName;
     JLabel jlPlaylistName, jlAddSongs;
     JCheckBoxMenuItem jcbmiSong1, jcbmiSong2, jcbmiSong3, jcbmiSong4, jcbmiSong5;
-    boolean isVisible = true;
 
     public CreatePlaylistDialog(JFrame frame){
         super(frame, true);
@@ -27,7 +26,7 @@ public class CreatePlaylistDialog extends JDialog implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        jlPlaylistName = new JLabel("Playlist name:");
+        jlPlaylistName = new JLabel("Naam afspeellijst:");
 
         modalPanel.add(jlPlaylistName, gbc);
 
@@ -41,15 +40,15 @@ public class CreatePlaylistDialog extends JDialog implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 1;
 
-        jlAddSongs = new JLabel("Add Songs");
+        jlAddSongs = new JLabel("Nummers toevoegen");
 
         modalPanel.add(jlAddSongs, gbc);
 
-        jcbmiSong1 = new JCheckBoxMenuItem("Song 1");
-        jcbmiSong2 = new JCheckBoxMenuItem("Song 2");
-        jcbmiSong3 = new JCheckBoxMenuItem("Song 3");
-        jcbmiSong4 = new JCheckBoxMenuItem("Song 4");
-        jcbmiSong5 = new JCheckBoxMenuItem("Song 5");
+        jcbmiSong1 = new JCheckBoxMenuItem("Nummer 1");
+        jcbmiSong2 = new JCheckBoxMenuItem("Nummer 2");
+        jcbmiSong3 = new JCheckBoxMenuItem("Nummer 3");
+        jcbmiSong4 = new JCheckBoxMenuItem("Nummer 4");
+        jcbmiSong5 = new JCheckBoxMenuItem("Nummer 5");
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -89,14 +88,7 @@ public class CreatePlaylistDialog extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(isVisible){
-            isVisible = false;
-            this.setVisible(false);
-        }
-        else{
-            isVisible = true;
-            this.setVisible(true);
-        }
+        this.setVisible(false);
 
     }
 }

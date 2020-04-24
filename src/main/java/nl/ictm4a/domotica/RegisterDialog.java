@@ -5,13 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Register extends JDialog implements ActionListener {
+public class RegisterDialog extends JDialog implements ActionListener {
 
     private JButton jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
 
-    public Register(JFrame parent) {
+    public RegisterDialog(JFrame parent) {
         super(parent, true);
         setTitle("Registreren centrale PC-applicatie");
         setSize(280,200);
@@ -58,10 +58,10 @@ public class Register extends JDialog implements ActionListener {
             if(jtUsername.getText().equals("")){
                 JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");
             }
-            if(jpPassword.getPassword().equals("")){
+            else if(jpPassword.getPassword().length == 0){
                 JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
             }
-            else if (!"".equals(jtUsername.getText())&& !"".equals(jpPassword.getPassword())){
+            else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
                 JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
                 System.out.println(jtUsername.getText());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
                 System.out.println(jpPassword.getPassword());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.

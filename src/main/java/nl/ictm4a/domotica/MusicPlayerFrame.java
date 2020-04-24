@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class MusicPlayerFrame extends JFrame implements ActionListener {
 
-
     JButton jbCreatePlaylist, jbPreviousSong, jbNextSong, jbPlay, jbPause;
     JComboBox jcbSelectPlaylist;
     JLabel jlSelectPlaylist, jlSongName, jlSongRemainder;
@@ -26,7 +25,7 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
         //Select playlist label
 
         gbc.gridwidth = 3;
-        jlSelectPlaylist = new JLabel("Select Playlist:");
+        jlSelectPlaylist = new JLabel("Afspeellijst selecteren:");
 
         gbc.gridx=0;
         gbc.gridy=0;
@@ -68,7 +67,7 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
 
         panel.add(jlSongName, gbc);
 
-        //Previous song button
+        //Previous Song button
 
         jbPreviousSong = new JButton("<<");
 
@@ -104,7 +103,7 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
 
         jbPause.setVisible(false);
 
-        //Next song button
+        //Next Song button
 
         jbNextSong = new JButton(">>");
 
@@ -116,7 +115,7 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
 
         //remaining time label
 
-        jlSongRemainder = new JLabel("1:23 remaining");
+        jlSongRemainder = new JLabel("1:23 resterend");
 
         gbc.gridwidth = 3;
         gbc.gridx=0;
@@ -124,11 +123,10 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
 
         panel.add(jlSongRemainder, gbc);
 
-        setTitle("MusicPlayer");
-        setSize(800, 600);
+        setTitle("Muziekspeler");
+        setSize(250, 150);
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+
     }
 
     public ArrayList<String> createDummyPlayLists(){
@@ -136,8 +134,8 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
         ArrayList<String> myPlayLists = new ArrayList<>();
 
         myPlayLists.add("Chill");
-        myPlayLists.add("Party");
         myPlayLists.add("Study");
+        myPlayLists.add("Party");
         myPlayLists.add("Rock");
 
         return myPlayLists;
@@ -159,5 +157,6 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
             jbPlay.setVisible(true);
             jbPause.setVisible(false);
         }
+
     }
 }
