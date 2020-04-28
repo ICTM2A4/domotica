@@ -9,55 +9,30 @@ public class LoginFrame extends JFrame implements ActionListener {
     private JButton jbLogin, jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
+    private JLabel jlUsername, jlPassword;
     LoginFrame loginFrame;
 
     public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
         setSize(250,250);
-        GridBagConstraints gbc = new GridBagConstraints();
         setResizable(false);
-        setLayout(new GridBagLayout());
-        gbc.insets = new Insets(1, 1,2,1);
+        UIElement uiElement = new UIElement();
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        JPanel panel = uiElement.panel;
+        add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JLabel jlUsername = new JLabel("Gebruikersnaam");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(jlUsername, gbc);
-        jtUsername = new JTextField(10);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        add(jtUsername, gbc);
-        JLabel jlPassword = new JLabel("Wachtwoord");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(jlPassword, gbc);
-        jpPassword = new JPasswordField(10);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        add(jpPassword, gbc);
-        jbLogin = new JButton("Inloggen");
-        jbCancel = new JButton("Annuleren");
-        jbRegister = new JButton("Registreren");
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(jbLogin, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        add(jbRegister, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 4;
-        add(jbCancel, gbc);
+        jlUsername = uiElement.addLabel("Gebruikersnaam", 0, 0);
+        jtUsername = uiElement.addTextField(10, 1, 0);
+        jlPassword = uiElement.addLabel("Wachtwoord", 0, 1);
+        jpPassword = uiElement.addPasswordField(10, 1, 1);
+        jbLogin = uiElement.addButton("Inloggen", 1, 1, 2);
         jbLogin.addActionListener(this);
-        jbCancel.addActionListener(this);
+        jbRegister = uiElement.addButton("Registreren", 0,4);
         jbRegister.addActionListener(this);
+        jbCancel = uiElement.addButton("Annuleren", 1,4);
+        jbCancel.addActionListener(this);
         setVisible(true);
-
     }
 
     public void actionPerformed(ActionEvent e){
