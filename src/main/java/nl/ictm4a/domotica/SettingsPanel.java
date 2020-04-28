@@ -14,83 +14,22 @@ public class SettingsPanel extends JPanel implements ActionListener {
     public SettingsPanel(SettingsDialog settingsDialog) {
         this.settingsDialog = settingsDialog;
         setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-
-        // wanneer moet de kachel aan
-        jlHeatingQuestion = new JLabel("Wanneer moet de kachel aan?");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 3;
-        add(jlHeatingQuestion, gbc);
-
-        jlHeatingAnswerLeft = new JLabel("Beneden ");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        add(jlHeatingAnswerLeft, gbc);
-
-        jlHeatingInput = new JTextField("", 2);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        add(jlHeatingInput, gbc);
-
-        jlHeatingAnswerRight = new JLabel(" graden Celsius.");
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        add(jlHeatingAnswerRight, gbc);
-
-        // some dummy spacing
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(jlDummy, gbc);
-
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        add(jlDummy, gbc);
-
-        // wanneer moet de verlichting aan
-        jlLightingQuestion = new JLabel("Wanneer moet de verlichting aan?");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 3;
-        add(jlLightingQuestion, gbc);
-
-        jlLightingAnswerLeft = new JLabel("Beneden ");
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        add(jlLightingAnswerLeft, gbc);
-
-        jlLightingInput = new JTextField("", 2);
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        add(jlLightingInput, gbc);
-
-        jlLightingAnswerRight = new JLabel(" lichtsensor meting.");
-        gbc.gridx = 2;
-        gbc.gridy = 5;
-        add(jlLightingAnswerRight, gbc);
-
-        // some dummy spacing
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        add(jlDummy, gbc);
-
-        // save
-        jbSave = new JButton("Opslaan");
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        add(jbSave, gbc);
+        UIElement uiElement = new UIElement();
+        uiElement.alterPanel(this);
+        jlHeatingQuestion = uiElement.addLabel("Wanneer moet de kachel aan?", 3, 0, 0);
+        jlHeatingAnswerLeft = uiElement.addLabel("Beneden", 1, 0, 1);
+        jlHeatingInput = uiElement.addTextField(2,  1, 1);
+        jlHeatingAnswerRight = uiElement.addLabel(" graden Celsius.", 2, 1);
+        jlDummy = uiElement.addLabel(" ", 0, 2);//quick and dirty whitespace
+        jlDummy = uiElement.addLabel(" ", 0, 3);//quick and dirty whitespace
+        jlLightingQuestion = uiElement.addLabel("Wanneer moet de verlichting aan?", 3, 0, 4);// wanneer moet de verlichting aan
+        jlLightingAnswerLeft = uiElement.addLabel("Beneden ", 3, 0, 5);// wanneer moet de verlichting aan
+        jlLightingInput = uiElement.addTextField(2, 1, 5);
+        jlLightingAnswerRight = uiElement.addLabel(" lichtsensor meting.", 2, 5);
+        jlDummy = uiElement.addLabel(" ", 0, 3);//quick and dirty whitespace
+        jbSave = uiElement.addButton("Opslaan", 0, 7);
         jbSave.addActionListener(this);
-
-        // cancel
-        jbCancel = new JButton("Cancel");
-        gbc.gridx = 2;
-        gbc.gridy = 7;
-        add(jbCancel, gbc);
+        jbCancel = uiElement.addButton("Cancel", 2, 7);
         jbCancel.addActionListener(this);
     }
 

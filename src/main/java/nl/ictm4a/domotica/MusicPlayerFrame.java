@@ -1,4 +1,5 @@
 package nl.ictm4a.domotica;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,141 +7,43 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class MusicPlayerFrame extends JFrame implements ActionListener {
-
     JButton jbCreatePlaylist, jbPreviousSong, jbNextSong, jbPlay, jbPause;
     JComboBox jcbSelectPlaylist;
     JLabel jlSelectPlaylist, jlSongName, jlSongRemainder;
     CreatePlaylistDialog createPlaylistDialog;
+    UIElement uiElement;
 
     public MusicPlayerFrame(){
-
-        JPanel panel = new JPanel(new GridBagLayout());
-
-        add(panel);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-
-        //Select playlist label
-
-        gbc.gridwidth = 3;
-        jlSelectPlaylist = new JLabel("Afspeellijst selecteren:");
-
-        gbc.gridx=0;
-        gbc.gridy=0;
-
-        panel.add(jlSelectPlaylist, gbc);
-
-        //Select playlist dropdown
-
-        jcbSelectPlaylist = new JComboBox(createDummyPlayLists().toArray());
-
-        jcbSelectPlaylist.setBounds(60, 32, 200, 50);
-
-        gbc.fill =  GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
-        gbc.gridx=0;
-        gbc.gridy=1;
-
-        panel.add(jcbSelectPlaylist, gbc);
-
-        //Create playlist button
-
-        jbCreatePlaylist = new JButton("+");
-
-        jbCreatePlaylist.addActionListener(this);
-
-        gbc.gridwidth = 1;
-        gbc.gridx=2;
-        gbc.gridy=1;
-
-        panel.add(jbCreatePlaylist, gbc);
-
-        //Song name label
-
-        jlSongName = new JLabel("Darude - Sandstorm");
-
-        gbc.gridwidth = 3;
-        gbc.gridx=0;
-        gbc.gridy=2;
-
-        panel.add(jlSongName, gbc);
-
-        //Previous Song button
-
-        jbPreviousSong = new JButton("<<");
-
-        gbc.gridwidth = 1;
-        gbc.gridx=0;
-        gbc.gridy=3;
-
-        panel.add(jbPreviousSong, gbc);
-
-        //Play buttun
-
-        jbPlay = new JButton(">");
-
-        gbc.gridwidth = 2;
-        gbc.gridx=1;
-        gbc.gridy=3;
-
-        jbPlay.addActionListener(this);
-
-        panel.add(jbPlay, gbc);
-
-        //Play buttun
-
-        jbPause = new JButton("||");
-
-        gbc.gridwidth = 2;
-        gbc.gridx=1;
-        gbc.gridy=3;
-
-        jbPause.addActionListener(this);
-
-        panel.add(jbPause, gbc);
-
-        jbPause.setVisible(false);
-
-        //Next Song button
-
-        jbNextSong = new JButton(">>");
-
-        gbc.gridwidth = 1;
-        gbc.gridx=3;
-        gbc.gridy=3;
-
-        panel.add(jbNextSong, gbc);
-
-        //remaining time label
-
-        jlSongRemainder = new JLabel("1:23 resterend");
-
-        gbc.gridwidth = 3;
-        gbc.gridx=0;
-        gbc.gridy=4;
-
-        panel.add(jlSongRemainder, gbc);
-
         setTitle("Muziekspeler");
         setSize(250, 150);
         setLayout(new FlowLayout(FlowLayout.LEFT));
-
+        UIElement uiElement = new UIElement();
+        JPanel panel = uiElement.panel;
+        add(panel);
+        GridBagConstraints gbc = uiElement.setupGbc();
+        jlSelectPlaylist = uiElement.addLabel("Afspeellijst selecteren:", 3, 0, 0); //Select playlist label
+        jcbSelectPlaylist = uiElement.addComboBox( createDummyPlayLists().toArray(), 0, 1);//Select playlist dropdown
+        jbCreatePlaylist = uiElement.addButton("+", 1, 1); //Create playlist button
+        jbCreatePlaylist.addActionListener(this);//triggers actionPerformed for pause button
+        jlSongName = uiElement.addLabel("Darude - Sandstorm", 3, 0,2);//Song name label
+        jbPreviousSong = uiElement.addButton("<<", 0, 3);//Previous Song button
+        jbPlay = uiElement.addButton(">",2, 1, 3);//Play button
+        jbPlay.addActionListener(this);//triggers actionPerformed for play button below
+        jbPause = uiElement.addButton("||",2, 1, 3);//Pause button
+        jbPause.addActionListener(this);//triggers actionPerformed for pause button below
+        jbPause.setVisible(false);//pause button starts hidden to simulate toggle
+        jbNextSong = uiElement.addButton(">>", 3, 3);//Next Song button
+        jlSongRemainder = uiElement.addLabel("1:23 resterend", 3, 0, 4);//remaining time label
     }
 
     public ArrayList<String> createDummyPlayLists(){
-
         ArrayList<String> myPlayLists = new ArrayList<>();
-
         myPlayLists.add("Chill");
         myPlayLists.add("Study");
         myPlayLists.add("Party");
         myPlayLists.add("Rock");
-
         return myPlayLists;
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -148,15 +51,12 @@ public class MusicPlayerFrame extends JFrame implements ActionListener {
             createPlaylistDialog = new CreatePlaylistDialog(this);
         }
         if(e.getSource().equals(jbPlay)){
-
             jbPlay.setVisible(false);
             jbPause.setVisible(true);
         }
         if(e.getSource().equals(jbPause)){
-
             jbPlay.setVisible(true);
             jbPause.setVisible(false);
         }
-
     }
 }
