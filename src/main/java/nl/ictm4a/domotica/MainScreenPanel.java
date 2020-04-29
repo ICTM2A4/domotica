@@ -11,81 +11,36 @@ public class MainScreenPanel extends JPanel implements ActionListener {
     private boolean jlHeatingStatus, jlLightingStatus;
     private JButton jbSettings, jbMusicPlayer;
     MainScreenFrame mainScreenFrame;
+    MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame();
 
     public MainScreenPanel() {
         setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-
-        // measured values
-        jlTemperature = new JLabel("Temperatuur: " + jlTemperatureValue);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(jlTemperature, gbc);
-
-        jlAirPressure = new JLabel("Luchdruk: " + jlAirPressureValue);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(jlAirPressure, gbc);
-
-        jlAirMoisture = new JLabel("Luchtvochtigheid: " + jlAirMoistureValue);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(jlAirMoisture, gbc);
-
-        // some dummy spacing
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        add(jlDummy, gbc);
-
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        add(jlDummy, gbc);
-
-        // status actuators (heat and lighting)
-        jlHeating = new JLabel("Verwarming: " + jlHeatingStatus);
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        add(jlHeating, gbc);
-
-        jlLighting = new JLabel("Verlichting: " + jlLightingStatus);
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        add(jlLighting, gbc);
-
-        // some dummy spacing
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        add(jlDummy, gbc);
-
-        // add buttons
-        jbSettings = new JButton("Instellingen");
-        gbc.gridx = 0;
-        gbc.gridy = 8;
-        add(jbSettings, gbc);
-        jbSettings.addActionListener(this);
-
-        // some dummy spacing
-        jlDummy = new JLabel(" ");
-        gbc.gridx = 0;
-        gbc.gridy = 9;
-        add(jlDummy, gbc);
-
-        jbMusicPlayer = new JButton("Muziekspeler");
-        gbc.gridx = 0;
-        gbc.gridy = 10;
-        add(jbMusicPlayer, gbc);
-        jbMusicPlayer.addActionListener(this);
+        UIElement uiElement = new UIElement();
+        uiElement.alterPanel(this);
+        jlTemperature = uiElement.addLabel("Temperatuur: " + jlTemperatureValue, 0, 0);//sensor values
+        jlAirPressure = uiElement.addLabel("Luchdruk: " + jlAirPressureValue, 0, 1);//sensor values
+        jlAirMoisture = uiElement.addLabel("Luchtvochtigheid: " + jlAirMoistureValue, 0, 2);//sensor values
+        jlDummy = uiElement.addLabel(" ", 0, 3);//quick and dirty whitespace
+        jlDummy = uiElement.addLabel(" ", 0, 4);//quick and dirty whitespace
+        jlHeating = uiElement.addLabel("Verwarming: " + jlHeatingStatus, 0, 5);// status actuator (heat)
+        jlLighting = uiElement.addLabel("Verlichting: " + jlLightingStatus, 0, 6);// status actuator (lighting)
+        jlDummy = uiElement.addLabel(" ", 0, 7);//quick and dirty whitespace
+        jbSettings = uiElement.addButton("Instellingen", 0, 8);//settings button
+        jbSettings.addActionListener(this); //actionlistener
+        jlDummy = uiElement.addLabel(" ", 0, 9);//quick and dirty whitespace
+        jbMusicPlayer = uiElement.addButton("Muziekspeler", 0, 10);//music player button
+        jbMusicPlayer.addActionListener(this);//actionlistener
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbSettings) {
             SettingsDialog settingsDialog = new SettingsDialog(mainScreenFrame);
             settingsDialog.setVisible(true);
+        }
+        if(e.getSource().equals(jbMusicPlayer)){
+            if(!musicPlayerFrame.isVisible()){
+                musicPlayerFrame.setVisible(true);
+            }
         }
     }
 }

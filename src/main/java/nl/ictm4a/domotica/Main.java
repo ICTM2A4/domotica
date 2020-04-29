@@ -1,9 +1,10 @@
 package nl.ictm4a.domotica;
 
+
 public class Main {
 
-    public static void main(String[] args) {
 
+    public static void main(String...args) {
+        LoginFrame login = new LoginFrame();
     }
-
 }
