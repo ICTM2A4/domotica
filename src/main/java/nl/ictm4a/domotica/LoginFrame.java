@@ -3,6 +3,7 @@ package nl.ictm4a.domotica;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.security.NoSuchAlgorithmException;
 
 public class LoginFrame extends JFrame implements ActionListener {
 
@@ -10,15 +11,18 @@ public class LoginFrame extends JFrame implements ActionListener {
     private JTextField jtUsername;
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
-    LoginFrame loginFrame;
+    private LoginFrame loginFrame;
+    private DatabaseFunction dbf = new DatabaseFunction();
+    private HashFunction hsf = new HashFunction();
 
     public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
-        setSize(250,250);
+        setSize(250, 250);
         setResizable(false);
         UIElement uiElement = new UIElement();
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
+        //adds al UI elements
         JPanel panel = uiElement.panel;
         add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,44 +32,51 @@ public class LoginFrame extends JFrame implements ActionListener {
         jpPassword = uiElement.addPasswordField(10, 1, 1);
         jbLogin = uiElement.addButton("Inloggen", 1, 1, 2);
         jbLogin.addActionListener(this);
-        jbRegister = uiElement.addButton("Registreren", 0,4);
+        jbRegister = uiElement.addButton("Registreren", 0, 4);
         jbRegister.addActionListener(this);
-        jbCancel = uiElement.addButton("Annuleren", 1,4);
+        jbCancel = uiElement.addButton("Annuleren", 1, 4);
         jbCancel.addActionListener(this);
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource() == jbLogin){
-            if(jtUsername.getText().equals("")){
-                JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == jbLogin) {
+            String password = new String(jpPassword.getPassword());             //turns getPassword into a String
+            if (jtUsername.getText().length() < 1) {
+                JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");      // return a message to tell the owner that they have not yet typed in their username
             }
-            else if(jpPassword.getPassword().length == 0){
-                JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
+            if (password.length() < 1) {
+                JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");      // return a message to tell the owner that they have not yet typed in their password
             }
+            if (jtUsername.getText().length() > 0 && password.length() > 0) {       //true when both the username and the password are filled with at least 1 character
+                String hPassword = null;
+                try {
+                    hPassword = hsf.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
+                } catch (NoSuchAlgorithmException ex) {
+                    ex.printStackTrace();
+                }
+                    if (dbf.select("Select password from User where username = '" + jtUsername.getText() + "'").equals(hPassword)) {        //checks if the used username and password are recognized in the database
+                        setVisible(false);
+                        JOptionPane.showMessageDialog(this, "U bent succesvol ingelogd");
 
-            else if (!"".equals(jtUsername.getText())&& 0!=jpPassword.getPassword().length){
-                JOptionPane.showMessageDialog(this, "U bent succesvol ingelogd");
-                setVisible(false);
-                //System.out.println(jtUsername.getText());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
-                //System.out.println(jpPassword.getPassword());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
+                        // succes login, change screen to main screen
+                        MainScreenFrame mainScreenFrame = new MainScreenFrame();                                                                  //sends the user to the main screen
+                        mainScreenFrame.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");        // a message is shown if the user enters a username and password that do not match data from the database
+                    }
 
-                // succes login, change screen to main screen
-                MainScreenFrame mainScreenFrame = new MainScreenFrame();
-                mainScreenFrame.setVisible(true);
-            }
-
-           else{                                 //wordt uiteindelijk vervangen voor een voorwaarde die checkt of de gegevens kloppen.
-                JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");
             }
         }
-        if(e.getSource() == jbCancel){
-            dispose();                                      //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de gebruiker terug gaat naar het hoofdmenu.
-        }
-        if(e.getSource() == jbRegister){
-            RegisterDialog rg = new RegisterDialog(loginFrame);
-            rg.setVisible(true);
+            if (e.getSource() == jbCancel) {
+                dispose();                                                                                                                        //closes the entire application
+            }
+            if (e.getSource() == jbRegister) {
+                RegisterDialog rg = new RegisterDialog(loginFrame);                                                                               //the register dialog is opened
+                rg.setVisible(true);
+            }
+
         }
 
     }
-}
+

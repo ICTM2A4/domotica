@@ -1,25 +1,12 @@
 package nl.ictm4a.domotica;
 
 
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.security.NoSuchAlgorithmException;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException {
-//        String url = "jdbc:mysql://localhost:3306?useLegacyDatetimeCode=false&serverTimezone=GMT";
-//        String user = "root";
-//        String password = "root";
-//        try {
-//            Connection myConn = DriverManager.getConnection(url, user, password);
-//
-//        } catch (SQLException e){
-//            e.printStackTrace();
-//        }
 
-      LoginFrame loginFrame = new LoginFrame();
+    public static void main(String...args) throws NoSuchAlgorithmException {
+        LoginFrame login = new LoginFrame();
     }
-
 }
