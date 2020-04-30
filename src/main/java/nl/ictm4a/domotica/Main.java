@@ -19,7 +19,11 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
-      LoginFrame loginFrame = new LoginFrame();
+//      LoginFrame loginFrame = new LoginFrame();
+
+        Python python = new Python();
+
+        python.executeFile();
     }
 
 }
