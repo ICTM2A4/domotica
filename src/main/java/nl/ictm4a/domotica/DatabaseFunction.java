@@ -1,8 +1,9 @@
 package nl.ictm4a.domotica;
 
+import javax.swing.*;
 import java.sql.*;
 
-public class DatabaseFunction {
+public class DatabaseFunction extends JFrame{
 
     public String select(String query) {
         String MYSQL_URL = "jdbc:mysql://localhost:3306/mydb?useLegacyDatetimeCode=false&serverTimezone=GMT";
@@ -22,11 +23,13 @@ public class DatabaseFunction {
                     result = resultSet.getString(i);
                 }
             }
+            con.close();
 
         }
         catch(SQLException ex) {
             System.out.println("SQLException:\n"+ex.toString());
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "De verbinding met de database is verbroken. Probeer het later opnieuw");
         }
 
         if(result.length() == 0) {
@@ -44,6 +47,7 @@ public class DatabaseFunction {
             con = DriverManager.getConnection(MYSQL_URL,"root","root");
             st = con.createStatement();
             st.execute(query);
+            con.close();
         }
         catch(SQLException ex) {
             System.out.println("SQLException:\n"+ex.toString());

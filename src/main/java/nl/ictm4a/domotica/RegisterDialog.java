@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 
 public class RegisterDialog extends JDialog implements ActionListener {
 
@@ -12,6 +13,7 @@ public class RegisterDialog extends JDialog implements ActionListener {
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
     private DatabaseFunction dbf = new DatabaseFunction();
+    private HashFunction hsf = new HashFunction();
 
     public RegisterDialog(JFrame parent) {
         super(parent, true);
@@ -33,27 +35,34 @@ public class RegisterDialog extends JDialog implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
-        String password = new String(jpPassword.getPassword());
+
 
         if(e.getSource() == jbRegister){
+            String password = new String(jpPassword.getPassword());
             if(jtUsername.getText().length() < 1){
-                JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");
+                JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");               // return a message to tell the owner that they have not yet typed in their username
             }
             if(password.length() < 1){
-                JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
+                JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");                  // return a message to tell the owner that they have not yet typed in their password
             }
-            if (jtUsername.getText().length() > 0 && password.length() > 0){
-                if(dbf.select("select username from User where username = '" + jtUsername.getText() + "'").length()==0) {
-                    JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
-                    int userId = Integer.parseInt(dbf.select("Select max(user_id) from user"));
-                    userId++;
-                    dbf.insert("insert into User values (" + userId + ", '" + jtUsername.getText() + "', '" + password + "')");
-                    setVisible(false);
-                }
-                else {
-                        JOptionPane.showMessageDialog(this, "Er bestaat al een account met de ingevulde gebruikersnaam \n Probeer een andere gebruikersnaam");
+            if (jtUsername.getText().length() > 0 && password.length() > 0){                                            //true when both the username and the password are filled with at least 1 character
+                    if(dbf.select("select username from User where username = '" + jtUsername.getText() + "'").length()==0) {           // This statement makes sure that every username is unique.
+                        String hPassword = null;
+                        try {
+                            hPassword = hsf.stringToHex(password);                                                      //turns the password into hash (uses 'HashFunction')
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                        }
+                        dbf.insert("insert into User (username, password) values ('" + jtUsername.getText() + "', '" + hPassword + "')");       //inserts the new user data into the database
+
                     }
+                    else {
+                        JOptionPane.showMessageDialog(this, "Er bestaat al een account met de ingevulde gebruikersnaam. \n Probeer een andere gebruikersnaam");             //this message is shown if the chosen username is already taken
+                    }
+                    JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
+                    setVisible(false);                                                                                                                                                              //if the user is successfully registered, the register dialog closes and returns to the login page
                 }
+
                 }
         if(e.getSource() == jbCancel){
             setVisible(false);
