@@ -14,10 +14,4 @@ public class MainScreenFrame extends JFrame {
         MainScreenPanel mainScreenPanel = new MainScreenPanel();
         add(mainScreenPanel);
     }
-
-/*    public static void main(String[] args) {
-        MainScreenFrame mainScreenFrame = new MainScreenFrame();
-        mainScreenFrame.setVisible(true);
-    }*/
-
 }
