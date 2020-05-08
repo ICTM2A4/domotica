@@ -74,7 +74,7 @@ public class UIElement {
         return addPasswordField("", 1, x, y);
     }
 
-    JPasswordField addPasswordField(String passwordTextField, int x, int y){
+    JPasswordField addPasswordField(String passwordFieldText, int x, int y){
         return addPasswordField(passwordFieldText, 1, x, y);
     }
 
