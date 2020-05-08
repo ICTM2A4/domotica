@@ -4,11 +4,22 @@ import com.fazecast.jSerialComm.SerialPort;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
-
+/**
+ * ArduinoListener and actually sender as well.
+ * Reads the LDR value that's sent from the Arduino to the Java application, if there's a change to the status of the lighting,
+ * it will send a 1 (turn green light on (is the lighting led)) to the Arduino, 2 for turning it off.
+ *
+ * For logging it will save the changes of the status of the lighting, not on each LDR value.
+ * We believe this is better to prevent a lot of inserts each #milliseconds and that it's only needed to log the changes.
+ */
 public class ArduinoListener {
-    private int lightingThreshold = 40;
+    DatabaseFunction databaseFunction = new DatabaseFunction();
+    private int lightingThreshold = 40; // TODO: get this out of the database
+    private int ldrValue = 0;
 
     static OutputStream outputStream;
 
@@ -35,18 +46,25 @@ public class ArduinoListener {
                 //System.out.println(data.nextLine());
                 boolean currentLightingStatus = MainScreenPanel.jlLightingStatus; // need to know current status to compare if incoming value from arduino's ldr sensor changes
                 try { // try parsing the incoming data to a long (because sometimes u get a "_____________________________________<value)" returned...) and sometimes u get a string returned as well..?
-                    MainScreenPanel.jlLightingStatus = Long.parseLong(data.nextLine()) < lightingThreshold; // TODO when is it dark enough to turn the lights on
+                    ldrValue = Integer.parseInt(data.nextLine());
+                    MainScreenPanel.jlLightingStatus = ldrValue < lightingThreshold; // TODO when is it dark enough to turn the lights on
                 } catch(NumberFormatException nfe) {
-                    System.out.println("Couldn't parse to long");
+                    //System.out.println("Couldn't parse");
                 }
 
                 // checks out what current status is, if it has changed, send the changes to led light and display
                 if(currentLightingStatus != MainScreenPanel.jlLightingStatus) {
                     MainScreenPanel.jlLighting.setText("Verlichting: " + MainScreenPanel.getLightingStatus());
                     if (MainScreenPanel.jlLightingStatus) { // if lightingstatus is true = on
+                        // TODO: can clean this up I guess.
                         try {
                             outputStream.write("1".getBytes()); // 1 is turn green light on
                             outputStream.flush();
+
+                            Date date = new Date();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
+                            String currentDateTime = format.format(date);
+                            databaseFunction.insert("INSERT INTO `logging`(`sensor_id`, `value`, `datetime`, `status`) VALUES (1, "+ldrValue+", '"+currentDateTime+"', 1)");
                             //.out.println("sent 1");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -55,6 +73,11 @@ public class ArduinoListener {
                         try {
                             outputStream.write("2".getBytes()); // 2 is turn green light off
                             outputStream.flush();
+
+                            Date date = new Date();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
+                            String currentDateTime = format.format(date);
+                            databaseFunction.insert("INSERT INTO `logging`(`sensor_id`, `value`, `datetime`, `status`) VALUES (1, "+ldrValue+", '"+currentDateTime+"', 0)");
                             //System.out.println("sent 2");
                         } catch (IOException e) {
                             e.printStackTrace();

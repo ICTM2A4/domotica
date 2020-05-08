@@ -1,7 +1,5 @@
 package nl.ictm4a.domotica;
 
-import javax.naming.event.ObjectChangeListener;
-import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public class UIElement {
     }
 
     JTextField addTextField(String textFieldText, int rows, int width, int x, int y){
-        JTextField textField = new JTextField(rows);
+        JTextField textField = new JTextField(textFieldText, rows);
         alterGbc(width, x, y);
         panel.add(textField, gbc);
         return textField;
@@ -65,16 +63,21 @@ public class UIElement {
         return addTextField("", 10, 1, x, y);
     }
 
-    JPasswordField addPasswordField(int rows, int x, int y){
-        JPasswordField jPasswordField = new JPasswordField(rows);
+    JPasswordField addPasswordField(String passwordTextField, int rows, int x, int y){
+        JPasswordField jPasswordField = new JPasswordField(passwordTextField, rows);
         alterGbc(1, x, y);
         panel.add(jPasswordField, gbc);
         return jPasswordField;
     }
 
     JPasswordField addPasswordField(int x, int y){
-        return addPasswordField(1, x, y);
+        return addPasswordField("", 1, x, y);
     }
+
+    JPasswordField addPasswordField(String passwordTextField, int x, int y){
+        return addPasswordField(passwordTextField, 1, x, y);
+    }
+
 
     JComboBox addComboBox(Object[] options, int width, int x, int y){
         JComboBox jComboBox = new JComboBox(options);

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 
 public class RegisterDialog extends JDialog implements ActionListener {
 
@@ -11,6 +12,9 @@ public class RegisterDialog extends JDialog implements ActionListener {
     private JTextField jtUsername;
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
+
+    DatabaseFunction databaseFunction = new DatabaseFunction();
+    HashFunction hashFunction = new HashFunction();
 
     public RegisterDialog(JFrame parent) {
         super(parent, true);
@@ -23,7 +27,7 @@ public class RegisterDialog extends JDialog implements ActionListener {
         jlUsername = uiElement.addLabel("Gebruikersnaam", 0, 0);
         jtUsername = uiElement.addTextField(10, 1, 0);
         jlPassword = uiElement.addLabel("Wachtwoord", 0, 1);
-        jpPassword = uiElement.addPasswordField(10, 1, 1);
+        jpPassword = uiElement.addPasswordField("", 10, 1, 1);
         jbRegister = uiElement.addButton("Registreren", 0,4);
         jbRegister.addActionListener(this);
         jbCancel = uiElement.addButton("Annuleren", 1,4);
@@ -41,10 +45,17 @@ public class RegisterDialog extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
             }
             else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
-                JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
-                System.out.println(jtUsername.getText());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
-                System.out.println(jpPassword.getPassword());   //wordt uiteindelijk vervangen door een regel die ervoor zorgt dat de data naar de database gaat.
-                setVisible(false);
+                try {
+                    boolean success = databaseFunction.insert("INSERT INTO `user`(`username`, `password`) VALUES ('" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "')");
+                    if(success) {
+                        JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
+                        setVisible(false);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik");
+                    }
+                } catch (NoSuchAlgorithmException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
         if(e.getSource() == jbCancel){
