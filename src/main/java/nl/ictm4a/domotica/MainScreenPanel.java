@@ -6,12 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainScreenPanel extends JPanel implements ActionListener {
-    private JLabel jlTemperature, jlAirPressure, jlAirMoisture, jlHeating, jlLighting, jlDummy;
+    public static JLabel jlTemperature, jlAirPressure, jlAirMoisture, jlHeating, jlLighting, jlDummy;
     private int jlTemperatureValue, jlAirPressureValue, jlAirMoistureValue;
-    private boolean jlHeatingStatus, jlLightingStatus;
+    public static boolean jlHeatingStatus, jlLightingStatus;
     private JButton jbSettings, jbMusicPlayer;
     MainScreenFrame mainScreenFrame;
     MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame();
+    ArduinoListener arduinoListener = new ArduinoListener();
 
     public MainScreenPanel() {
         setLayout(new GridBagLayout());
@@ -23,7 +24,7 @@ public class MainScreenPanel extends JPanel implements ActionListener {
         jlDummy = uiElement.addLabel(" ", 0, 3);//quick and dirty whitespace
         jlDummy = uiElement.addLabel(" ", 0, 4);//quick and dirty whitespace
         jlHeating = uiElement.addLabel("Verwarming: " + jlHeatingStatus, 0, 5);// status actuator (heat)
-        jlLighting = uiElement.addLabel("Verlichting: " + jlLightingStatus, 0, 6);// status actuator (lighting)
+        jlLighting = uiElement.addLabel("Verlichting: " + getLightingStatus(), 0, 6);// status actuator (lighting)
         jlDummy = uiElement.addLabel(" ", 0, 7);//quick and dirty whitespace
         jbSettings = uiElement.addButton("Instellingen", 0, 8);//settings button
         jbSettings.addActionListener(this); //actionlistener
@@ -31,6 +32,11 @@ public class MainScreenPanel extends JPanel implements ActionListener {
         jbMusicPlayer = uiElement.addButton("Muziekspeler", 0, 10);//music player button
         jbMusicPlayer.addActionListener(this);//actionlistener
     }
+
+    public static String getLightingStatus() {
+        return (jlLightingStatus) ? "aan" : "uit";
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbSettings) {

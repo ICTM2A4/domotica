@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 public class LoginFrame extends JFrame implements ActionListener {
 
@@ -14,6 +15,10 @@ public class LoginFrame extends JFrame implements ActionListener {
     private LoginFrame loginFrame;
     private DatabaseFunction dbf = new DatabaseFunction();
     private HashFunction hsf = new HashFunction();
+
+    // TODO: TEMPORARY ALREADY FILLED IN TEXT
+    private String userName = "Frans";
+    private String userPassword = "test";
 
     public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
@@ -27,9 +32,9 @@ public class LoginFrame extends JFrame implements ActionListener {
         add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jlUsername = uiElement.addLabel("Gebruikersnaam", 0, 0);
-        jtUsername = uiElement.addTextField(10, 1, 0);
-        jlPassword = uiElement.addLabel("Wachtwoord", 0, 1);
-        jpPassword = uiElement.addPasswordField(10, 1, 1);
+        jtUsername = uiElement.addTextField(userName, 10, 1, 0); // TEMPORARY FILLED IN TEXT
+        jlPassword = uiElement.addLabel(userPassword, 0, 1); // TEMPORARY FILLED IN TEXT
+        jpPassword = uiElement.addPasswordField("test", 10, 1, 1);
         jbLogin = uiElement.addButton("Inloggen", 1, 1, 2);
         jbLogin.addActionListener(this);
         jbRegister = uiElement.addButton("Registreren", 0, 4);
@@ -55,8 +60,15 @@ public class LoginFrame extends JFrame implements ActionListener {
                 } catch (NoSuchAlgorithmException ex) {
                     ex.printStackTrace();
                 }
-                    if (dbf.select("Select password from User where username = '" + jtUsername.getText() + "'").equals(hPassword)) {        //checks if the used username and password are recognized in the database
+                    if (dbf.select("Select password from User where username = '" + jtUsername.getText() + "'").get(0).equals(hPassword)) {        //checks if the used username and password are recognized in the database
                         setVisible(false);
+
+                        ArrayList resultArray = dbf.select("SELECT user_id, username FROM User WHERE username = '" + jtUsername.getText() + "'");
+                        System.out.println(resultArray);
+
+                        //int userId = dbf.select("Select * from User where username = '" + jtUsername.getText() + "'").getInt("user_id");
+                        String userName = jtUsername.getText();
+
                         JOptionPane.showMessageDialog(this, "U bent succesvol ingelogd");
 
                         // succes login, change screen to main screen
