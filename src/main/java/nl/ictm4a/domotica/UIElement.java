@@ -63,7 +63,7 @@ public class UIElement {
         return addTextField("", 10, 1, x, y);
     }
 
-    JPasswordField addPasswordField(String passwordTextField, int rows, int x, int y){
+    JPasswordField addPasswordField(String passwordFieldText, int rows, int x, int y){
         JPasswordField jPasswordField = new JPasswordField(passwordTextField, rows);
         alterGbc(1, x, y);
         panel.add(jPasswordField, gbc);
