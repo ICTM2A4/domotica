@@ -14,8 +14,8 @@ public class DatabaseFunction extends JFrame{
     Connection con;
     Statement st;
 
-    public ArrayList<String> select(String column, String fromTable, String where, String is) {
-        ArrayList<String> resultArray = new ArrayList<>();
+    public ArrayList<String> selectRow(String column, String fromTable, String where, String is) {
+        ArrayList<String> resultArrayList = new ArrayList<>();
         try {
             con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
             PreparedStatement stmt = con.prepareStatement("SELECT " + column + " FROM " + fromTable + " WHERE " + where + " = ?");
@@ -26,7 +26,6 @@ public class DatabaseFunction extends JFrame{
             while (resultSet.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
                     resultArrayList.add(resultSet.getString(i));
-                    resultArray.add(resultSet.getString(i));
                 }
             }
             con.close();
@@ -38,11 +37,12 @@ public class DatabaseFunction extends JFrame{
         return resultArrayList;
     }
 
-    public boolean insertRow(String query){
+    public boolean insertRow(String table, String column, String value){
         try {
             con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
-            st = con.createStatement();
-            st.execute(query);
+            String query = "INSERT INTO " + table + " (" + column + ") VALUES (" + value + ")";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.executeUpdate();
             con.close();
         } catch(SQLIntegrityConstraintViolationException icve) {
             return false;
@@ -54,13 +54,37 @@ public class DatabaseFunction extends JFrame{
         return true;
     }
 
-    public boolean insertRow(String table, String column, String value){
+    public boolean insertLoggingLightValue(String table, String column1, String column2, String column3, String column4, int value1, int value2, String value3, int value4) {
+
         try {
             con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
-            String query = "INSERT INTO " + table + " (" + column + ") VALUES (" + value + ")";
-            PreparedStatement st = con.prepareStatement(query);
-            System.out.println(st);
-            st.executeUpdate();
+            String sqlInsert = "INSERT INTO "+table+" ("+column1+", "+column2+", "+column3+", "+column4+") VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmt = con.prepareStatement(sqlInsert);
+            pstmt.setInt(1, value1);
+            pstmt.setInt(2, value2);
+            pstmt.setString(3, value3);
+            pstmt.setInt(4, value4);
+            pstmt.executeUpdate();
+            con.close();
+        } catch(SQLIntegrityConstraintViolationException icve) {
+            return false;
+        }catch(SQLException ex) {
+            System.out.println("SQLException:\n"+ex.toString());
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateUserSetting(String fromTable, String column1, String column2, int value1, int value2, int value3) {
+        try {
+            con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
+            String sqlUpdate = "UPDATE "+fromTable+" SET "+column1+" = ?, "+column2+" = ? WHERE 'user_id' = ?";
+            PreparedStatement pstmt = con.prepareStatement(sqlUpdate);
+            pstmt.setInt(1, value1);
+            pstmt.setInt(2, value2);
+            pstmt.setInt(3, value3);
+            pstmt.executeUpdate();
             con.close();
         } catch(SQLIntegrityConstraintViolationException icve) {
             return false;

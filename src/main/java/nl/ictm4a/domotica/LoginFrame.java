@@ -13,12 +13,12 @@ public class LoginFrame extends JFrame implements ActionListener {
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
     private LoginFrame loginFrame;
-    private DatabaseFunction dbf = new DatabaseFunction();
-    private HashFunction hsf = new HashFunction();
+    private DatabaseFunction databaseFunction = new DatabaseFunction();
+    private HashFunction hashFunction = new HashFunction();
 
     // TODO: TEMPORARY ALREADY FILLED IN TEXT
-    private String userName = "gb";
-    private String userPassword = "Wachtwoord";
+    private String userName = "frans";
+    private String userPassword = "test";
 
     public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
@@ -55,37 +55,32 @@ public class LoginFrame extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");      // return a message to tell the owner that they have not yet typed in their password
             }
             if (jtUsername.getText().length() > 0 && password.length() > 0) {       //true when both the username and the password are filled with at least 1 character
+
                 String hPassword = null;
                 try {
-                    hPassword = hsf.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
-                    System.out.println(hPassword + " = ingevoerde");
-
+                    hPassword = hashFunction.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
                 } catch (NoSuchAlgorithmException ex) {
                     ex.printStackTrace();
                 }
-                    if (dbf.selectRow("Select password from User where username = '" + jtUsername.getText() + "'").get(0).equals(hPassword)) {        //checks if the used username and password are recognized in the database
-                        setVisible(false);
 
-                        ArrayList<String> resultArray = dbf.selectRow("SELECT user_id, username FROM User WHERE username = '" + jtUsername.getText() + "'");
-                        int userID = Integer.parseInt(resultArray.get(0)); // make integer from first in arraylist (which is the userid from the select query)
-                        String userName = String.valueOf(resultArray.get(1)); // make string from the username
-                        User user = new User(userID, userName);
-                        //JOptionPane.showMessageDialog(this, "U bent succesvol ingelogd");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");        // a message is shown if the user enters a username and password that do not match data from the database
-                    }
-
+                if (databaseFunction.selectRow("password", "user", "username", jtUsername.getText()).get(0).equals(hPassword)) {        //checks if the used username and password are recognized in the database
+                    setVisible(false);
+                    ArrayList<String> resultArray = databaseFunction.selectRow("user_id, username", "user", "username", jtUsername.getText());
+                    User user = new User(Integer.parseInt(resultArray.get(0)), String.valueOf(resultArray.get(1)));
+                } else {
+                    JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");        // a message is shown if the user enters a username and password that do not match data from the database
+                }
             }
         }
-            if (e.getSource() == jbCancel) {
-                dispose();                                                                                                                        //closes the entire application
-            }
-            if (e.getSource() == jbRegister) {
-                RegisterDialog rg = new RegisterDialog(loginFrame);                                                                               //the register dialog is opened
-                rg.setVisible(true);
-            }
-
+        if (e.getSource() == jbCancel) {
+            dispose();                                                                                                                        //closes the entire application
+        }
+        if (e.getSource() == jbRegister) {
+            RegisterDialog rg = new RegisterDialog(loginFrame);                                                                               //the register dialog is opened
+            rg.setVisible(true);
         }
 
     }
+
+}
 

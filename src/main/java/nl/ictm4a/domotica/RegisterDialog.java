@@ -37,7 +37,6 @@ public class RegisterDialog extends JDialog implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == jbRegister){
-
             if(jtUsername.getText().equals("")){
                 JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");
             }
@@ -46,10 +45,15 @@ public class RegisterDialog extends JDialog implements ActionListener {
             }
             else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
                 try {
-                    boolean success = databaseFunction.insertRow("INSERT INTO `user`(`username`, `password`) VALUES ('" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "')");
+                    boolean success = databaseFunction.insertRow("user", "`username`, `password`", "'" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "'");
                     if(success) {
-                        JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
-                        setVisible(false);
+                        // also have to register user settings, just use the standard input
+                        String userID = String.valueOf(databaseFunction.selectRow("user_id", "user", "username", jtUsername.getText()).get(0));
+                        success = databaseFunction.insertRow("usersetting", "`user_id`", userID);
+                        if(success) {
+                            JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
+                            setVisible(false);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik");
                     }

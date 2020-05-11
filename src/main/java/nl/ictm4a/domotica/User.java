@@ -9,8 +9,8 @@ public class User {
     public User(int userID, String userName) {
         this.userID = userID;
         this.userName = userName;
-        this.heatingInputText = Integer.parseInt(databaseFunction.selectRow("SELECT heatValue FROM usersetting WHERE user_id = " + getUserID()).get(0));
-        this.lightingInputText = Integer.parseInt(databaseFunction.selectRow("SELECT ldrValue FROM usersetting WHERE user_id = " + getUserID()).get(0));
+        this.heatingInputText = Integer.parseInt(databaseFunction.selectRow("heatValue", "usersetting", "user_id", String.valueOf(getUserID())).get(0));
+        this.lightingInputText = Integer.parseInt(databaseFunction.selectRow("ldrValue", "usersetting", "user_id", String.valueOf(getUserID())).get(0));
         // succes login, change screen to main screen
         MainScreenFrame mainScreenFrame = new MainScreenFrame(this); //sends the user to the main screen
         mainScreenFrame.setVisible(true);
@@ -34,7 +34,7 @@ public class User {
 
     public void setUserSetting(int heatingInputText, int lightingInputText) {
         // db update
-        if(databaseFunction.updateRow("UPDATE usersetting SET `heatValue` = "+heatingInputText+", ldrValue = "+lightingInputText+" WHERE user_id = "+getUserID()+"")) { // if the update worked
+        if(databaseFunction.updateUserSetting("usersetting", "ldrValue", "heatValue", lightingInputText, heatingInputText, getUserID())) { // if the update worked
             this.heatingInputText = heatingInputText;
             this.lightingInputText = lightingInputText;
         }
