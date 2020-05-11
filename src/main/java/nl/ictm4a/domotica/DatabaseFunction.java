@@ -55,7 +55,6 @@ public class DatabaseFunction extends JFrame{
     }
 
     public boolean insertLoggingLightValue(String table, String column1, String column2, String column3, String column4, int value1, int value2, String value3, int value4) {
-
         try {
             con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
             String sqlInsert = "INSERT INTO "+table+" ("+column1+", "+column2+", "+column3+", "+column4+") VALUES (?, ?, ?, ?)";
