@@ -46,7 +46,7 @@ public class RegisterDialog extends JDialog implements ActionListener {
             }
             else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
                 try {
-                    boolean success = databaseFunction.insert("INSERT INTO `user`(`username`, `password`) VALUES ('" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "')");
+                    boolean success = databaseFunction.insertRow("INSERT INTO `user`(`username`, `password`) VALUES ('" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "')");
                     if(success) {
                         JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
                         setVisible(false);

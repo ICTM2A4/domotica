@@ -10,25 +10,21 @@ public class DatabaseFunction extends JFrame{
     private String dateTimeCode = "?useLegacyDatetimeCode=false&serverTimezone=GMT";
     private String dbUserName = "root";
     private String dbPassword = "";
+    private String MYSQL_URL = hostName + dbName + dateTimeCode;
+    Connection con;
+    Statement st;
 
-    public ArrayList select(String query) {
-        String MYSQL_URL = hostName + dbName + dateTimeCode;
-        Connection con;
-        Statement st;
-        String result = "";
-        ArrayList<String> resultArray = new ArrayList<>();
-
+    public ArrayList<String> selectRow(String query) {
+        ArrayList<String> resultArrayList = new ArrayList<>();
         try {
             con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
             st = con.createStatement();
             ResultSet resultSet =st.executeQuery(query);
-
             ResultSetMetaData rsmd = resultSet.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
             while (resultSet.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    resultArray.add(resultSet.getString(i));
-                    //result = resultSet.getString(i);
+                    resultArrayList.add(resultSet.getString(i));
                 }
             }
             con.close();
@@ -37,14 +33,26 @@ public class DatabaseFunction extends JFrame{
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "De verbinding met de database is verbroken. Probeer het later opnieuw");
         }
-        return resultArray;
-        //return (result.length() == 0) ? "" : result;
+        return resultArrayList;
     }
 
-    public boolean insert(String query){
-        String MYSQL_URL = hostName + dbName + dateTimeCode;
-        Connection con;
-        Statement st;
+    public boolean insertRow(String query){
+        try {
+            con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
+            st = con.createStatement();
+            st.execute(query);
+            con.close();
+        } catch(SQLIntegrityConstraintViolationException icve) {
+            return false;
+        }catch(SQLException ex) {
+            System.out.println("SQLException:\n"+ex.toString());
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateRow(String query) {
         try {
             con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
             st = con.createStatement();
