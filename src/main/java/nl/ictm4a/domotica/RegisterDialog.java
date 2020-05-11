@@ -46,13 +46,24 @@ public class RegisterDialog extends JDialog implements ActionListener {
             }
             else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
                 try {
-                    boolean success = databaseFunction.insert("INSERT INTO `user`(`username`, `password`) VALUES ('" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "')");
-                    if(success) {
-                        JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
-                        setVisible(false);
+
+
+                    if(databaseFunction.select("username", "User", "username", jtUsername.getText()).size() < 1){
+
+                        boolean success = databaseFunction.insert("User", "username, password",  "'" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "'");
+                        if(success) {
+                            JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
+                            setVisible(false);
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Het registreren is mislukt");
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik");
                     }
+
+
+
+
                 } catch (NoSuchAlgorithmException ex) {
                     ex.printStackTrace();
                 }
