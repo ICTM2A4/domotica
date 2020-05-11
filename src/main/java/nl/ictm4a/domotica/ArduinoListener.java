@@ -1,7 +1,6 @@
 package nl.ictm4a.domotica;
 
 import com.fazecast.jSerialComm.SerialPort;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -18,13 +17,13 @@ import java.util.Scanner;
  */
 public class ArduinoListener {
     DatabaseFunction databaseFunction = new DatabaseFunction();
-    private int lightingThreshold = 40; // TODO: get this out of the database
+    User user;
     private int ldrValue = 0;
 
     static OutputStream outputStream;
 
-    public ArduinoListener() {
-
+    public ArduinoListener(User user) {
+        this.user = user;
         Thread arduinoListener = new Thread(() -> { // this is a thread, it runs along other threads separately at the same time
             SerialPort port = SerialPort.getCommPort("COM4"); // change this to what youre port is TODO automatic change ports?
             if(port.openPort()) { // port is open (not in use)
@@ -47,7 +46,7 @@ public class ArduinoListener {
                 boolean currentLightingStatus = MainScreenPanel.jlLightingStatus; // need to know current status to compare if incoming value from arduino's ldr sensor changes
                 try { // try parsing the incoming data to a long (because sometimes u get a "_____________________________________<value)" returned...) and sometimes u get a string returned as well..?
                     ldrValue = Integer.parseInt(data.nextLine());
-                    MainScreenPanel.jlLightingStatus = ldrValue < lightingThreshold; // TODO when is it dark enough to turn the lights on
+                    MainScreenPanel.jlLightingStatus = ldrValue < user.getLightingInputText();
                 } catch(NumberFormatException nfe) {
                     //System.out.println("Couldn't parse");
                 }
@@ -64,7 +63,7 @@ public class ArduinoListener {
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
                             String currentDateTime = format.format(date);
-                            databaseFunction.insert("`logging`", "`sensor_id`, `value`, `datetime`, `status`", "1, "+ldrValue+", '"+currentDateTime+"', 1");
+                            databaseFunction.insertRow("`logging`", "`sensor_id`, `value`, `datetime`, `status`", "1, "+ldrValue+", '"+currentDateTime+"', 1");
                             //.out.println("sent 1");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -77,7 +76,7 @@ public class ArduinoListener {
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
                             String currentDateTime = format.format(date);
-                            databaseFunction.insert("`logging`", "`sensor_id`, `value`, `datetime`, `status`", "(1, "+ldrValue+", '"+currentDateTime+"', 0)");
+                            databaseFunction.insertRow("`logging`", "`sensor_id`, `value`, `datetime`, `status`", "(1, "+ldrValue+", '"+currentDateTime+"', 0)");
                             //System.out.println("sent 2");
                         } catch (IOException e) {
                             e.printStackTrace();

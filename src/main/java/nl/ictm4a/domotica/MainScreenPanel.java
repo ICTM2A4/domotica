@@ -11,10 +11,13 @@ public class MainScreenPanel extends JPanel implements ActionListener {
     public static boolean jlHeatingStatus, jlLightingStatus;
     private JButton jbSettings, jbMusicPlayer;
     MainScreenFrame mainScreenFrame;
+    User user;
     MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame();
-    ArduinoListener arduinoListener = new ArduinoListener();
+    ArduinoListener arduinoListener;
 
-    public MainScreenPanel() {
+    public MainScreenPanel(User user) {
+        this.user = user;
+        this.arduinoListener = new ArduinoListener(user);
         setLayout(new GridBagLayout());
         UIElement uiElement = new UIElement();
         uiElement.alterPanel(this);
@@ -40,8 +43,8 @@ public class MainScreenPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbSettings) {
-            SettingsDialog settingsDialog = new SettingsDialog(mainScreenFrame);
-            settingsDialog.setVisible(true);
+            UserSettingsDialog userSettingsDialog = new UserSettingsDialog(mainScreenFrame, user);
+            userSettingsDialog.setVisible(true);
         }
         if(e.getSource().equals(jbMusicPlayer)){
             if(!musicPlayerFrame.isVisible()){
