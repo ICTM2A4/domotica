@@ -63,7 +63,7 @@ public class ArduinoListener {
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
                             String currentDateTime = format.format(date);
-                            databaseFunction.insertRow("INSERT INTO `logging`(`sensor_id`, `value`, `datetime`, `status`) VALUES (1, "+ldrValue+", '"+currentDateTime+"', 1)");
+                            databaseFunction.insertRow("`logging`", "`sensor_id`, `value`, `datetime`, `status`", "1, "+ldrValue+", '"+currentDateTime+"', 1");
                             //.out.println("sent 1");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -76,7 +76,7 @@ public class ArduinoListener {
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
                             String currentDateTime = format.format(date);
-                            databaseFunction.insertRow("INSERT INTO `logging`(`sensor_id`, `value`, `datetime`, `status`) VALUES (1, "+ldrValue+", '"+currentDateTime+"', 0)");
+                            databaseFunction.insertRow("`logging`", "`sensor_id`, `value`, `datetime`, `status`", "(1, "+ldrValue+", '"+currentDateTime+"', 0)");
                             //System.out.println("sent 2");
                         } catch (IOException e) {
                             e.printStackTrace();

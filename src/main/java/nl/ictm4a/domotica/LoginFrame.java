@@ -17,8 +17,8 @@ public class LoginFrame extends JFrame implements ActionListener {
     private HashFunction hsf = new HashFunction();
 
     // TODO: TEMPORARY ALREADY FILLED IN TEXT
-    private String userName = "Frans";
-    private String userPassword = "test";
+    private String userName = "gb";
+    private String userPassword = "Wachtwoord";
 
     public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
@@ -46,7 +46,8 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == jbLogin) {
-            String password = new String(jpPassword.getPassword());             //turns getPassword into a String
+            String password = new String(jpPassword.getPassword());         //turns getPassword into a String variable
+            String userName = jtUsername.getText();                         //turns getText into a String variable
             if (jtUsername.getText().length() < 1) {
                 JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");      // return a message to tell the owner that they have not yet typed in their username
             }
@@ -57,6 +58,8 @@ public class LoginFrame extends JFrame implements ActionListener {
                 String hPassword = null;
                 try {
                     hPassword = hsf.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
+                    System.out.println(hPassword + " = ingevoerde");
+
                 } catch (NoSuchAlgorithmException ex) {
                     ex.printStackTrace();
                 }
