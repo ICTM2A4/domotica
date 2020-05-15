@@ -14,10 +14,12 @@ public class MainScreenPanel extends JPanel implements ActionListener {
     User user;
     MusicPlayerFrame musicPlayerFrame = new MusicPlayerFrame();
     ArduinoListener arduinoListener;
+    RaspberryPiListener raspberryPiListener;
 
     public MainScreenPanel(User user) {
         this.user = user;
-        this.arduinoListener = new ArduinoListener(user);
+        this.raspberryPiListener = new RaspberryPiListener(user);
+        this.arduinoListener = new ArduinoListener(user, raspberryPiListener);
         setLayout(new GridBagLayout());
         UIElement uiElement = new UIElement();
         uiElement.alterPanel(this);
@@ -26,7 +28,7 @@ public class MainScreenPanel extends JPanel implements ActionListener {
         jlAirMoisture = uiElement.addLabel("Luchtvochtigheid: " + jlAirMoistureValue, 0, 2);//sensor values
         jlDummy = uiElement.addLabel(" ", 0, 3);//quick and dirty whitespace
         jlDummy = uiElement.addLabel(" ", 0, 4);//quick and dirty whitespace
-        jlHeating = uiElement.addLabel("Verwarming: " + jlHeatingStatus, 0, 5);// status actuator (heat)
+        jlHeating = uiElement.addLabel("Verwarming: " + getHeatingStatus(), 0, 5);// status actuator (heat)
         jlLighting = uiElement.addLabel("Verlichting: " + getLightingStatus(), 0, 6);// status actuator (lighting)
         jlDummy = uiElement.addLabel(" ", 0, 7);//quick and dirty whitespace
         jbSettings = uiElement.addButton("Instellingen", 0, 8);//settings button
@@ -38,6 +40,10 @@ public class MainScreenPanel extends JPanel implements ActionListener {
 
     public static String getLightingStatus() {
         return (jlLightingStatus) ? "aan" : "uit";
+    }
+
+    public static String getHeatingStatus() {
+        return (jlHeatingStatus) ? "aan" : "uit";
     }
 
     @Override
