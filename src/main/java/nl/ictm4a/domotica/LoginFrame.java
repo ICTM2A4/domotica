@@ -17,8 +17,8 @@ public class LoginFrame extends JFrame implements ActionListener {
     private HashFunction hashFunction = new HashFunction();
 
     // TODO: TEMPORARY ALREADY FILLED IN TEXT
-    private String userName = "frans";
-    private String userPassword = "test";
+    private String userName = "";
+    private String userPassword = "";
 
     public LoginFrame() {
         setTitle("Inloggen centrale PC-applicatie");
