@@ -11,7 +11,7 @@ public class DatabaseFunction extends JFrame{
     private String dbName = "domotica";
     private String dateTimeCode = "?useLegacyDatetimeCode=false&serverTimezone=GMT";
     private String dbUserName = "root";
-    private String dbPassword = "";
+    private String dbPassword = "root";
     private String MYSQL_URL = hostName + dbName + dateTimeCode;
     Connection con;
     Statement st;

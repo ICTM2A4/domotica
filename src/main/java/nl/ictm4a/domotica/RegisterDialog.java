@@ -43,22 +43,27 @@ public class RegisterDialog extends JDialog implements ActionListener {
             else if(jpPassword.getPassword().length == 0){
                 JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
             }
-            else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
-                try {
-                    boolean success = databaseFunction.insertRow("user", "`username`, `password`", "'" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "'");
-                    if(success) {
-                        // also have to register user settings, just use the standard input
-                        String userID = String.valueOf(databaseFunction.selectRow("user_id", "user", "username", jtUsername.getText()).get(0));
-                        success = databaseFunction.insertRow("usersetting", "`user_id`", userID);
-                        if(success) {
-                            JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
-                            setVisible(false);
+            else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length) {
+                if (!(jtUsername.getText().contains(" "))) {
+                    try {
+                        boolean success = databaseFunction.insertRow("user", "`username`, `password`", "'" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "'");
+                        if (success) {
+                            // also have to register user settings, just use the standard input
+                            String userID = String.valueOf(databaseFunction.selectRow("user_id", "user", "username", jtUsername.getText()).get(0));
+                            success = databaseFunction.insertRow("usersetting", "`user_id`", userID);
+                            if (success) {
+                                JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
+                                setVisible(false);
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik");
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik");
+                    } catch (NoSuchAlgorithmException ex) {
+                        ex.printStackTrace();
                     }
-                } catch (NoSuchAlgorithmException ex) {
-                    ex.printStackTrace();
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Je gebruikersnaam mag geen spaties bevatten");
                 }
             }
         }
