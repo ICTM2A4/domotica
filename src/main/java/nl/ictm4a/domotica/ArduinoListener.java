@@ -31,7 +31,7 @@ public class ArduinoListener {
         Thread arduinoListener = new Thread(() -> { // this is a thread, it runs along other threads separately at the same time
             SerialPort port = setCommPort();
             if(port.openPort()) { // port is open (not in use)
-                System.out.println(port.getSystemPortName() + " port is open.");
+                //System.out.println(port.getSystemPortName() + " port is open.");
                 sleepFunction(5000); // a small sleep after opening the port, this seems to solve some issues for stuff not being ran
                 scanArduino(port);
             } else {
@@ -88,7 +88,7 @@ public class ArduinoListener {
         try {
             outputStream.write(message.getBytes());
             outputStream.flush();
-            System.out.println(message);
+            //System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
