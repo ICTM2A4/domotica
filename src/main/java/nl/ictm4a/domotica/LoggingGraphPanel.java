@@ -2,6 +2,9 @@ package nl.ictm4a.domotica;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LoggingGraphPanel extends JPanel {
     LoggingGraph loggingGraph;
@@ -54,18 +57,19 @@ public class LoggingGraphPanel extends JPanel {
 
         // draws the graph
         g.setColor(Color.LIGHT_GRAY);
-        int multiplySize = 2, totaleWidth = 10*multiplySize, totaleHeight = 10*multiplySize;
-        int xDraw = 1, yDraw, width = totaleWidth, height = totaleHeight;
+        int multiplySize = 2, totalWidth = 10*multiplySize, totaleHeight = 10*multiplySize;
+        int xDraw = 1, yDraw, width = totalWidth, height = totaleHeight;
         for(int i = 0; i < 10; i++) {
             g.drawLine(xDraw,0,xDraw,8 * height);
             xDraw += width;
         }
-        xDraw = 1; yDraw = 1; width = totaleWidth; height = totaleHeight;
+        xDraw = 1; yDraw = 1; width = totalWidth; height = totaleHeight;
         for(int i = 0; i < 9; i++) {
             g.drawLine(xDraw,yDraw,9 * width,yDraw);
             yDraw += height;
         }
-        width = totaleWidth;
+        width = totalWidth;
+
 
         // draws the values on the graph
         g.setColor(Color.BLACK);
@@ -83,6 +87,35 @@ public class LoggingGraphPanel extends JPanel {
         g.setColor(Color.BLUE);
         g.drawLine(9 * width,(userChoice + 30)*multiplySize +1,1,(userChoice + 30)*multiplySize +1);
 
+
+        ArrayList<Integer> integerList = new ArrayList<>();
+        for(int i = 0; i < loggingGraph.getTempValueArrayList().size(); i++) {
+            integerList.add((loggingGraph.getTempValueArrayList().get(i).intValue() + 30)*multiplySize+1);
+        }
+        // x coordinates of vertices
+        int xPolygon[] = { 1,180,180,160,140,120,100,80,60,40,20,1 };
+        // y coordinates of vertices
+        int yPolygon[] = { 1,1,
+                integerList.get(0),
+                integerList.get(1),
+                integerList.get(2),
+                integerList.get(3),
+                integerList.get(4),
+                integerList.get(5),
+                integerList.get(6),
+                integerList.get(7),
+                integerList.get(8),
+                integerList.get(9)}; // theres always 10 in the arraylist we get. i couldnt figure out a simpler way to do this
+        //int yPolygon[] = { 1,1,  180,160,140,120,100,80,60,40,20,1 };
+        // number of vertices
+        int numberofpoints = xPolygon.length;
+        // set the color of line drawn to blue
+        g.setColor(Color.RED);
+        // draw the polygon using drawPolygon function
+        g.drawPolygon(xPolygon,yPolygon,numberofpoints);
+        g.setColor(new Color(255, 0, 12,25));
+        g.fillPolygon(xPolygon,yPolygon,numberofpoints);
+
         // displays text next to the graph
         g.setColor(Color.BLACK);
         g.rotate(Math.toRadians(180.0), x, y); // woops got to rotate it back to normal to display the degree as text
@@ -93,5 +126,7 @@ public class LoggingGraphPanel extends JPanel {
             displayExtra = (height*i)-3;
             displayTemp += 10;
         }
+        g.drawString("Temperatuurgrafiek",20,10);
+        g.drawString("(blauwe streep is gebruikerskeuze)",20,23);
     }
 }
