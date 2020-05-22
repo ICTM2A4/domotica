@@ -54,21 +54,27 @@ public class LoginFrame extends JFrame implements ActionListener {
             if (password.length() < 1) {
                 JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");      // return a message to tell the owner that they have not yet typed in their password
             }
-            if (jtUsername.getText().length() > 0 && password.length() > 0) {       //true when both the username and the password are filled with at least 1 character
-
-                String hPassword = null;
-                try {
-                    hPassword = hashFunction.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
-                } catch (NoSuchAlgorithmException ex) {
-                    ex.printStackTrace();
-                }
-                String userpassword = databaseFunction.selectUserPassword(jtUsername.getText());
-                if (userpassword.equals(hPassword)) {        //checks if the used username and password are recognized in the database
-                    setVisible(false);
-                    User user = new User(jtUsername.getText(), databaseFunction.selectUserID(jtUsername.getText(), userpassword));
+            if (jtUsername.getText().length() > 0 && password.length() > 0) {//true when both the username and the password are filled with at least 1 character
+                if (!(jtUsername.getText().contains(" "))) {
+                    String hPassword = null;
+                    try {
+                      hPassword = hashFunction.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
+                    } catch (NoSuchAlgorithmException ex) {
+                        ex.printStackTrace();
+                    }
+                    String userpassword = databaseFunction.selectUserPassword(jtUsername.getText());
+                    if (userpassword.equals(hPassword)) {        //checks if the used username and password are recognized in the database
+                        setVisible(false);
+                        User user = new User(jtUsername.getText(), databaseFunction.selectUserID(jtUsername.getText(), userpassword));
+                    } else {
+                        JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");  
+                    }
+                  
+                  
                 } else {
-                    JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");        // a message is shown if the user enters a username and password that do not match data from the database
+                    JOptionPane.showMessageDialog(this, "Je gebruikersnaam mag geen spaties bevatten");
                 }
+              
             }
         }
         if (e.getSource() == jbCancel) {

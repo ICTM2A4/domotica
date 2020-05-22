@@ -15,9 +15,6 @@ public class DatabaseFunction extends JFrame{
     private PreparedStatement ps = null;
     private ResultSetMetaData rsmd = null;
 
-
-
-
     public void insertLogging(String table, String column1, String column2, String column3, String column4, String column5, int value1, double value2, String value3, int value4, int value5) {
         try {
             con = DriverManager.getConnection(MYSQL_URL,dbUserName,dbPassword);
