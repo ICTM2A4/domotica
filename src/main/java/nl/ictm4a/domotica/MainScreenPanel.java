@@ -24,7 +24,7 @@ public class MainScreenPanel extends JPanel implements ActionListener {
         UIElement uiElement = new UIElement();
         uiElement.alterPanel(this);
         jlTemperature = uiElement.addLabel("Temperatuur: " + jlTemperatureValue, 0, 0);//sensor values
-        jlAirPressure = uiElement.addLabel("Luchdruk: " + jlAirPressureValue, 0, 1);//sensor values
+        jlAirPressure = uiElement.addLabel("Luchtdruk: " + jlAirPressureValue, 0, 1);//sensor values
         jlAirMoisture = uiElement.addLabel("Luchtvochtigheid: " + jlAirMoistureValue, 0, 2);//sensor values
         jlDummy = uiElement.addLabel(" ", 0, 3);//quick and dirty whitespace
         jlDummy = uiElement.addLabel(" ", 0, 4);//quick and dirty whitespace

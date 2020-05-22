@@ -10,28 +10,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class RaspberryPiListener {
-
     DatabaseFunction databaseFunction = new DatabaseFunction();
     private String lastMessage;
     private double tempValue, humValue, airPressValue;
-    private Socket socket;
     private final boolean debugging = true;
-    private DataInputStream din;
-    private DataOutputStream dout;
     private User user;
+    private String ipAdress = "192.168.1.81";
 
     public RaspberryPiListener(User user){
-
         this.user = user;
 
         Thread raspberryPiListener = new Thread(() -> {
-
-            if(setupSocket("192.168.0.101", 8000)){
-
-                while(receiveMessage() != null){
-                    String[] data = receiveMessage().split(", ");
+            try{
+            Socket socket = new Socket (ipAdress, 8000);
+            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+            DataInputStream din = new DataInputStream(socket.getInputStream());
+                while(receiveMessage(din) != null){
+                    String[] data = receiveMessage(din).split(", ");
                     for (int i = 0; i < data.length; i++) {
-
                         if(i == 0){
                             this.airPressValue = Double.parseDouble(data[i]);
                             MainScreenPanel.jlAirPressure.setText("Luchtdruk: " + (int)this.airPressValue + " hPa");
@@ -45,45 +41,50 @@ public class RaspberryPiListener {
                         else{
                             this.tempValue = Double.parseDouble(data[i])-7;
                             MainScreenPanel.jlTemperature.setText("Temperatuur: " + ((int)this.tempValue) +  "℃");
+
+                            MainScreenPanel.jlHeatingStatus = (int)tempValue < user.getHeatingInputText();
+                            MainScreenPanel.jlHeating.setText("Verwarming: " + MainScreenPanel.getHeatingStatus());
+                            if(MainScreenPanel.getHeatingStatus().equals("aan")) {
+                                databaseFunction.insertLogging("logging", "sensor_id", "value", "datetime", "user_id", "status", 2, tempValue, databaseFunction.getCurrentDateTime(), user.getUserID(), 1);
+                            } else {
+                                databaseFunction.insertLogging("logging", "sensor_id", "value", "datetime", "user_id", "status", 2, tempValue, databaseFunction.getCurrentDateTime(), user.getUserID(), 0);
+                            }
                         }
                     }
-                    MainScreenPanel.jlHeatingStatus = (int)tempValue < user.getHeatingInputText();
-                    MainScreenPanel.jlHeating.setText("Verwarming: " + MainScreenPanel.getHeatingStatus());
+
                 }
+            } catch (Exception e){
+                if(debugging)System.out.println(e.getMessage());
             }
         });
-
         raspberryPiListener.start();
+
+        Thread raspberryPiMusicListener = new Thread(() -> {
+            try{
+                Socket socket1 = new Socket (ipAdress, 8001);
+                DataOutputStream dout1=new DataOutputStream(socket1.getOutputStream());
+                DataInputStream din1 =new DataInputStream(socket1.getInputStream());
+                while(receiveMessage(din1) != null){
+                    String data = receiveMessage(din1);
+
+                    System.out.println(data);
+                }
+            } catch (Exception e){        }
+        });
+        raspberryPiMusicListener.start();
+
     }
 
-
-
-    public boolean setupSocket(String serverIp, int serverPort){
-
-        try{
-            this.socket = new Socket(serverIp, serverPort);
-            this.dout=new DataOutputStream(socket.getOutputStream());
-            this.din=new DataInputStream(socket.getInputStream());
-            return true;
-        } catch (Exception e){
-            if(debugging)System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
-    public void sendMessage(String message){
+    public void sendMessage(String message, DataOutputStream dout){
         try{
         dout.writeUTF(message);
         dout.flush();
-
         }
         catch (Exception e){
             if(debugging) System.out.println(e.getMessage());
-
         }
     }
-
-    public String receiveMessage(){
+    public String receiveMessage(DataInputStream din){
         try{
             return din.readUTF();
         }
@@ -92,16 +93,14 @@ public class RaspberryPiListener {
             return null;
         }
     }
-
-    public void closeSocket(){
+    public void closeSocket(Socket socket){
         try {
-            this.socket.close();
+            socket.close();
         }
         catch (Exception e){
             if(debugging) System.out.println(e.getMessage());
         }
     }
-
     public double getTempValue() {
         return tempValue;
     }

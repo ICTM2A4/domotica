@@ -58,29 +58,23 @@ public class LoginFrame extends JFrame implements ActionListener {
                 if (!(jtUsername.getText().contains(" "))) {
                     String hPassword = null;
                     try {
-                        hPassword = hashFunction.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
+                      hPassword = hashFunction.stringToHex(password);    //turns the password into hash (uses 'HashFunction')
                     } catch (NoSuchAlgorithmException ex) {
                         ex.printStackTrace();
                     }
-
-                    ArrayList<String> checkInfo = databaseFunction.selectRow("password", "user", "username", jtUsername.getText());
-
-                    if (checkInfo.size() > 0) {
-                        if (checkInfo.get(0).equals(hPassword)) {        //checks if the used username and password are recognized in the database
-                            setVisible(false);
-                        ArrayList<String> resultArray = databaseFunction.selectRow("user_id, username", "user", "username", jtUsername.getText());
-                        User user = new User(Integer.parseInt(resultArray.get(0)), String.valueOf(resultArray.get(1)));
+                    String userpassword = databaseFunction.selectUserPassword(jtUsername.getText());
+                    if (userpassword.equals(hPassword)) {        //checks if the used username and password are recognized in the database
+                        setVisible(false);
+                        User user = new User(jtUsername.getText(), databaseFunction.selectUserID(jtUsername.getText(), userpassword));
                     } else {
-                        JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");        // a message is shown if the user enters a username and password that do not match data from the database
+                        JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");  
                     }
-                }
-                    else {
-                        JOptionPane.showMessageDialog(this, "De combinatie van gebruikersnaam en wachtwoord komt niet overeen");        // a message is shown if the user enters a username and password that do not match data from the database
-                    }
-                }
-                else {
+                  
+                  
+                } else {
                     JOptionPane.showMessageDialog(this, "Je gebruikersnaam mag geen spaties bevatten");
                 }
+              
             }
         }
         if (e.getSource() == jbCancel) {

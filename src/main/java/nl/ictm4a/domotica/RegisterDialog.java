@@ -4,17 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.NoSuchAlgorithmException;
+
 
 public class RegisterDialog extends JDialog implements ActionListener {
-
     private JButton jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
-
     DatabaseFunction databaseFunction = new DatabaseFunction();
-    HashFunction hashFunction = new HashFunction();
+
 
     public RegisterDialog(JFrame parent) {
         super(parent, true);
@@ -46,12 +44,12 @@ public class RegisterDialog extends JDialog implements ActionListener {
             else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length) {
                 if (!(jtUsername.getText().contains(" "))) {
                     try {
-                        boolean success = databaseFunction.insertRow("user", "`username`, `password`", "'" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "'");
-                        if (success) {
+                      
+                        int lastInsertedID = databaseFunction.insertNewUser(jtUsername.getText(), String.valueOf(jpPassword.getPassword()));
+                        if(lastInsertedID > 0) {
                             // also have to register user settings, just use the standard input
-                            String userID = String.valueOf(databaseFunction.selectRow("user_id", "user", "username", jtUsername.getText()).get(0));
-                            success = databaseFunction.insertRow("usersetting", "`user_id`", userID);
-                            if (success) {
+                            lastInsertedID = databaseFunction.insertNewUserSetting(lastInsertedID);
+                            if(lastInsertedID > 0) {
                                 JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
                                 setVisible(false);
                             }
