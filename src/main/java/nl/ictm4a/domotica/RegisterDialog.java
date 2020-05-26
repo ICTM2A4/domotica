@@ -11,6 +11,7 @@ public class RegisterDialog extends JDialog implements ActionListener {
     private JTextField jtUsername;
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
+    private JTextArea jtfError;
     DatabaseFunction databaseFunction = new DatabaseFunction();
 
 
@@ -29,6 +30,10 @@ public class RegisterDialog extends JDialog implements ActionListener {
         jbRegister = uiElement.addButton("Registreren", 0,4);
         jbRegister.addActionListener(this);
         jbCancel = uiElement.addButton("Annuleren", 1,4);
+        jtfError = new JTextArea("", 2, 1);
+        jtfError.setOpaque(false);
+        jtfError.setForeground(Color.RED);
+        add(jtfError);
         jbCancel.addActionListener(this);
         setVisible(false);
     }
@@ -36,20 +41,20 @@ public class RegisterDialog extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == jbRegister){
             if(jtUsername.getText().equals("")){
-                JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in"); // TODO: make this into a jlabel error message
+                jtfError.setText("Voer een gebruikersnaam in");
             } else if(jpPassword.getPassword().length == 0){
-                JOptionPane.showMessageDialog(this, "Voer een wachtwoord in"); // TODO: make this into a jlabel error message
+                jtfError.setText("Voer een wachtwoord in");
             } else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
                 int lastInsertedID = databaseFunction.insertNewUser(jtUsername.getText(), String.valueOf(jpPassword.getPassword()));
                 if(lastInsertedID > 0) {
                     // also have to register user settings, just use the standard input
                     lastInsertedID = databaseFunction.insertNewUserSetting(lastInsertedID);
                     if(lastInsertedID > 0) {
-                        JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
+                        jtfError.setText("U bent succesvol geregistreerd");
                         setVisible(false);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik"); // TODO: make this into a jlabel error message
+                    jtfError.setText("Gebruikersnaam is al in gebruik");
                 }
             }
         }

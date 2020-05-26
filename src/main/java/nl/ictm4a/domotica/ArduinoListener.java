@@ -78,9 +78,14 @@ public class ArduinoListener {
         }
     }
 
-    // TODO: automatic port
+    // Automatic port
     private SerialPort setCommPort() {
-        return SerialPort.getCommPort("COM4"); // change this to what your port is
+        SerialPort[] commPort = SerialPort.getCommPorts();
+//        for (int i = 0; i < commPort.length; i++) {
+//            System.out.println((i+1)+ ": " + commPort[i].getSystemPortName());
+//        }
+        int port = commPort.length - 1;
+        return SerialPort.getCommPort(commPort[port].getSystemPortName()); // change this to what your port is
     }
 
     public void sendToArduino(String message) {
