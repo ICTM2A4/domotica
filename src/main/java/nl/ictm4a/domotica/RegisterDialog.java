@@ -44,17 +44,24 @@ public class RegisterDialog extends JDialog implements ActionListener {
                 jtfError.setText("Voer een gebruikersnaam in");
             } else if(jpPassword.getPassword().length == 0){
                 jtfError.setText("Voer een wachtwoord in");
-            } else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
-                int lastInsertedID = databaseFunction.insertNewUser(jtUsername.getText(), String.valueOf(jpPassword.getPassword()));
-                if(lastInsertedID > 0) {
-                    // also have to register user settings, just use the standard input
-                    lastInsertedID = databaseFunction.insertNewUserSetting(lastInsertedID);
-                    if(lastInsertedID > 0) {
-                        jtfError.setText("U bent succesvol geregistreerd");
-                        setVisible(false);
+            } else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length) {
+                if (!(jtUsername.getText().contains(" "))) {
+                    String hPassword = null;
+                    int lastInsertedID = databaseFunction.insertNewUser(jtUsername.getText(), String.valueOf(jpPassword.getPassword()));
+                    if (lastInsertedID > 0) {
+                        // also have to register user settings, just use the standard input
+                        lastInsertedID = databaseFunction.insertNewUserSetting(lastInsertedID);
+                        if (lastInsertedID > 0) {
+                            jtfError.setText("U bent succesvol geregistreerd");
+                            setVisible(false);
+                        }
+                    } else {
+                        jtfError.setText("Gebruikersnaam is al in gebruik");
                     }
-                } else {
-                    jtfError.setText("Gebruikersnaam is al in gebruik");
+
+                }
+                else {
+                    jtfError.setText("De gebruikersnaam mag \n geen spaties bevatten");
                 }
             }
         }
