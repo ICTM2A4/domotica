@@ -10,17 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class RaspberryPiListener {
-
     DatabaseFunction databaseFunction = new DatabaseFunction();
     private String lastMessage;
     private double tempValue, humValue, airPressValue;
     private final boolean debugging = true;
     private DataOutputStream dout1;
     private User user;
+
     private String ipAdress = "192.168.1.14";
 
     public RaspberryPiListener(User user){
-
         this.user = user;
 
         //TODO: in losse thread klasse zetten
@@ -28,7 +27,7 @@ public class RaspberryPiListener {
             try{
             Socket socket = new Socket (ipAdress, 8000);
             DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-            DataInputStream din=new DataInputStream(socket.getInputStream());
+            DataInputStream din = new DataInputStream(socket.getInputStream());
                 while(receiveMessage(din) != null){
                     String[] data = receiveMessage(din).split(", ");
                     for (int i = 0; i < data.length; i++) {
@@ -45,17 +44,24 @@ public class RaspberryPiListener {
                         else{
                             this.tempValue = Double.parseDouble(data[i])-7;
                             MainScreenPanel.jlTemperature.setText("Temperatuur: " + ((int)this.tempValue) +  "℃");
+
+                            MainScreenPanel.jlHeatingStatus = (int)tempValue < user.getHeatingInputText();
+                            MainScreenPanel.jlHeating.setText("Verwarming: " + MainScreenPanel.getHeatingStatus());
+                            if(MainScreenPanel.getHeatingStatus().equals("aan")) {
+                                databaseFunction.insertLogging("logging", "sensor_id", "value", "datetime", "user_id", "status", 2, tempValue, databaseFunction.getCurrentDateTime(), user.getUserID(), 1);
+                            } else {
+                                databaseFunction.insertLogging("logging", "sensor_id", "value", "datetime", "user_id", "status", 2, tempValue, databaseFunction.getCurrentDateTime(), user.getUserID(), 0);
+                            }
                         }
                     }
-                    MainScreenPanel.jlHeatingStatus = (int)tempValue < user.getHeatingInputText();
-                    MainScreenPanel.jlHeating.setText("Verwarming: " + MainScreenPanel.getHeatingStatus());
-                }
 
+                }
             } catch (Exception e){
                 if(debugging)System.out.println(e.getMessage());
             }
         });
         raspberryPiListener.start();
+
         Thread raspberryPiMusicListener = new Thread(() -> {
             try{
                 Socket socket1 = new Socket (ipAdress, 8001);
