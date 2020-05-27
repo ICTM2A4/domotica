@@ -4,18 +4,25 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainScreenFrame extends JFrame {
+    RaspberryPiListener raspberryPiListener;
 
     public MainScreenFrame(User user) {
+        this.raspberryPiListener = new RaspberryPiListener(user);
+
         setLayout(new FlowLayout(FlowLayout.LEFT));             // pulls all items to the left of the screen
         setTitle("Centrale PC-applicatie - " + user.getUserName());
-        setSize(400,250);
+        setSize(420,400);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         MainScreenPanel mainScreenPanel = new MainScreenPanel(user);
-        add(mainScreenPanel);
+        MusicPlayerPanel musicPlayerPanel = new MusicPlayerPanel(raspberryPiListener, this);
         LoggingGraph loggingGraph = new LoggingGraph(user);
         LoggingGraphPanel loggingGraphPanel = new LoggingGraphPanel(250, 250, loggingGraph);
+        add(mainScreenPanel);
         add(loggingGraphPanel);
+        add(musicPlayerPanel);
+
+
     }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class DatabaseFunction extends JFrame{
-    private String hostName = "jdbc:mysql://localhost:3306/", dbName = "domotica", dateTimeCode = "?useLegacyDatetimeCode=false&serverTimezone=GMT", dbUserName = "root", dbPassword = "root", MYSQL_URL = hostName + dbName + dateTimeCode;
+    private String hostName = "jdbc:mysql://localhost:3306/", dbName = "domotica", dateTimeCode = "?useLegacyDatetimeCode=false&serverTimezone=GMT", dbUserName = "root", dbPassword = "", MYSQL_URL = hostName + dbName + dateTimeCode;
     private HashFunction hashFunction = new HashFunction();
     private Connection con;
     private ResultSet rs = null;
