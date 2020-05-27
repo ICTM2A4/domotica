@@ -15,13 +15,15 @@ public class RaspberryPiListener {
     private String lastMessage;
     private double tempValue, humValue, airPressValue;
     private final boolean debugging = true;
+    private DataOutputStream dout1;
     private User user;
-    private String ipAdress = "192.168.0.100";
+    private String ipAdress = "192.168.1.14";
 
     public RaspberryPiListener(User user){
 
         this.user = user;
 
+        //TODO: in losse thread klasse zetten
         Thread raspberryPiListener = new Thread(() -> {
             try{
             Socket socket = new Socket (ipAdress, 8000);
@@ -57,32 +59,30 @@ public class RaspberryPiListener {
         Thread raspberryPiMusicListener = new Thread(() -> {
             try{
                 Socket socket1 = new Socket (ipAdress, 8001);
-                DataOutputStream dout1=new DataOutputStream(socket1.getOutputStream());
+                dout1=new DataOutputStream(socket1.getOutputStream());
                 DataInputStream din1 =new DataInputStream(socket1.getInputStream());
-                while(receiveMessage(din1) != null){
-                    String data = receiveMessage(din1);
 
+                while(receiveMessage(din1) != null) {
+                    String data = receiveMessage(din1);
                     System.out.println(data);
                 }
             }
             catch (Exception e){
-
+                if(debugging)System.out.println(e.getMessage());
             }
         });
-
         raspberryPiMusicListener.start();
-
     }
 
-    public void sendMessage(String message, DataOutputStream dout){
-        try{
-        dout.writeUTF(message);
-        dout.flush();
-        }
-        catch (Exception e){
-            if(debugging) System.out.println(e.getMessage());
+    public void sendMessage(String message) {
+        try {
+            dout1.writeUTF(message);
+            dout1.flush();
+        } catch (Exception e) {
+            if (debugging) System.out.println(e.getMessage());
         }
     }
+
     public String receiveMessage(DataInputStream din){
         try{
             return din.readUTF();
