@@ -4,17 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.NoSuchAlgorithmException;
+
 
 public class RegisterDialog extends JDialog implements ActionListener {
-
     private JButton jbCancel, jbRegister;
     private JTextField jtUsername;
     private JPasswordField jpPassword;
     private JLabel jlUsername, jlPassword;
-
+    private JTextArea jtfError;
     DatabaseFunction databaseFunction = new DatabaseFunction();
-    HashFunction hashFunction = new HashFunction();
+
 
     public RegisterDialog(JFrame parent) {
         super(parent, true);
@@ -31,6 +30,10 @@ public class RegisterDialog extends JDialog implements ActionListener {
         jbRegister = uiElement.addButton("Registreren", 0,4);
         jbRegister.addActionListener(this);
         jbCancel = uiElement.addButton("Annuleren", 1,4);
+        jtfError = new JTextArea("", 2, 1);
+        jtfError.setOpaque(false);
+        jtfError.setForeground(Color.RED);
+        add(jtfError);
         jbCancel.addActionListener(this);
         setVisible(false);
     }
@@ -38,27 +41,20 @@ public class RegisterDialog extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == jbRegister){
             if(jtUsername.getText().equals("")){
-                JOptionPane.showMessageDialog(this, "Voer een gebruikersnaam in");
-            }
-            else if(jpPassword.getPassword().length == 0){
-                JOptionPane.showMessageDialog(this, "Voer een wachtwoord in");
-            }
-            else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
-                try {
-                    boolean success = databaseFunction.insertRow("user", "`username`, `password`", "'" + jtUsername.getText() + "', '" + hashFunction.stringToHex(String.valueOf(jpPassword.getPassword())) + "'");
-                    if(success) {
-                        // also have to register user settings, just use the standard input
-                        String userID = String.valueOf(databaseFunction.selectRow("user_id", "user", "username", jtUsername.getText()).get(0));
-                        success = databaseFunction.insertRow("usersetting", "`user_id`", userID);
-                        if(success) {
-                            JOptionPane.showMessageDialog(this, "U bent succesvol geregistreerd");
-                            setVisible(false);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Gebruikersnaam is al in gebruik");
+                jtfError.setText("Voer een gebruikersnaam in");
+            } else if(jpPassword.getPassword().length == 0){
+                jtfError.setText("Voer een wachtwoord in");
+            } else if (!"".equals(jtUsername.getText())&& 0!= jpPassword.getPassword().length){
+                int lastInsertedID = databaseFunction.insertNewUser(jtUsername.getText(), String.valueOf(jpPassword.getPassword()));
+                if(lastInsertedID > 0) {
+                    // also have to register user settings, just use the standard input
+                    lastInsertedID = databaseFunction.insertNewUserSetting(lastInsertedID);
+                    if(lastInsertedID > 0) {
+                        jtfError.setText("U bent succesvol geregistreerd");
+                        setVisible(false);
                     }
-                } catch (NoSuchAlgorithmException ex) {
-                    ex.printStackTrace();
+                } else {
+                    jtfError.setText("Gebruikersnaam is al in gebruik");
                 }
             }
         }

@@ -45,28 +45,27 @@ public class ArduinoListener {
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0); // In this mode, a call to any of the read() or readBytes() methods will block until the number of milliseconds specified by the newReadTimeout parameter has elapsed or at least 1 byte of data can be read.
         Scanner data = new Scanner(port.getInputStream()); // scanner is for incoming information (values from the sensors)
         outputStream = port.getOutputStream(); // outputstream is for outgoing information (to turn leds on/off)
+        String lastSent = "Lighting";
         while(data.hasNextLine()) {
             boolean currentLightingStatus = MainScreenPanel.jlLightingStatus; // need to know current status to compare if incoming value from arduino's ldr sensor changes
-            boolean currentHeatingStatus = MainScreenPanel.jlHeatingStatus;
             try { // try parsing the incoming data to a long (because sometimes u get a "_____________________________________<value)" returned...) and sometimes u get a string returned as well..?
                 ldrValue = Integer.parseInt(data.nextLine());
                 MainScreenPanel.jlLightingStatus = ldrValue < user.getLightingInputText();
             } catch(NumberFormatException ignored) {}
             // checks out what current status is, if it has changed, send the changes to led light and display
             MainScreenPanel.jlLighting.setText("Verlichting: " + MainScreenPanel.getLightingStatus());
-            int sensorID = 1;
-
             if(currentLightingStatus != MainScreenPanel.jlLightingStatus) {
-                sendToArduino((MainScreenPanel.jlLightingStatus) ? "1" : "2"); // 1 = green on, 2 = green off
+                int sensorID = 1;
                 insertLogging(sensorID, ldrValue, (MainScreenPanel.jlLightingStatus) ? 1 : 0); // status 1 = on, 0 = off
             }
             MainScreenPanel.jlHeating.setText("Verwarming: " + MainScreenPanel.getHeatingStatus());
-            sensorID = 2;
 
-            sendToArduino((MainScreenPanel.jlHeatingStatus) ? "3" : "4"); // 3 = red on, 4 = red off
-            if(currentHeatingStatus != MainScreenPanel.jlHeatingStatus) {
-
-                insertLogging(sensorID, (int)raspberryPiListener.getTempValue(), (MainScreenPanel.jlHeatingStatus) ? 1 : 0); // status 1 = on, 0 = off
+            if(lastSent.equals("Lighting")) {
+                sendToArduino((MainScreenPanel.jlHeatingStatus) ? "3" : "4"); // 3 = red on, 4 = red off
+                lastSent = "Heating";
+            } else {
+                sendToArduino((MainScreenPanel.jlLightingStatus) ? "1" : "2"); // 1 = green on, 2 = green off
+                lastSent = "Lighting";
             }
         }
     }
@@ -79,22 +78,26 @@ public class ArduinoListener {
         }
     }
 
-    // TODO: automatic port
+    // Automatic port
     private SerialPort setCommPort() {
-        return SerialPort.getCommPort("COM3"); // change this to what your port is
+        SerialPort[] commPort = SerialPort.getCommPorts();
+//        for (int i = 0; i < commPort.length; i++) {
+//            System.out.println((i+1)+ ": " + commPort[i].getSystemPortName());
+//        }
+        int port = commPort.length - 1;
+        return SerialPort.getCommPort(commPort[port].getSystemPortName()); // change this to what your port is
     }
 
-    private void sendToArduino(String message) {
+    public void sendToArduino(String message) {
         try {
             outputStream.write(message.getBytes());
             outputStream.flush();
-            //System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void insertLogging(int sensorID, int value, int status) {
+    public void insertLogging(int sensorID, int value, int status) {
         databaseFunction.insertLogging("logging","sensor_id","value","datetime","status", "user_id",sensorID, value, databaseFunction.getCurrentDateTime(),status, user.getUserID());
     }
 
