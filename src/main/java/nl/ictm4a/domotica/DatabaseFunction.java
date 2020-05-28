@@ -128,6 +128,41 @@ public class DatabaseFunction extends JFrame{
         return 0;
     }
 
+    public int insertPlaylist(String title, int userId){
+        try {
+            con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
+            ps = con.prepareStatement("INSERT INTO tracklist (title, user_id) VALUES (?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            int index = 1;
+            ps.setString(index++, title);
+            ps.setInt(index++, userId);
+            ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            if(rs.next()) {
+                return rs.getInt(1); // returns the last inserted id
+            }
+            rs.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void insertTracklistTrack(int trackId, int tracklistId) {
+        try {
+            con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
+            ps = con.prepareStatement("INSERT INTO track_tracklist (track_id, tracklist_id) VALUES (?, ?)");
+            int index = 1;
+            ps.setInt(index++, trackId);
+            ps.setInt(index, tracklistId);
+            ps.executeUpdate();
+            rs.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String selectUserPassword(String userName) {
         try {
             con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
@@ -192,4 +227,77 @@ public class DatabaseFunction extends JFrame{
         }
         return resultArrayList;
     }
+
+    public ArrayList<Tracklist> selectPlaylists(int userID){
+        ArrayList<Tracklist> resultArrayList = new ArrayList<>();
+        try {
+            con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
+
+            ps = con.prepareStatement("SELECT * FROM tracklist WHERE user_id = ?");
+            int index = 1;
+            ps.setInt(index++, userID);
+            rs = ps.executeQuery();
+            rsmd = rs.getMetaData();
+            while (rs.next()) {
+                resultArrayList.add(new Tracklist(rs.getInt("tracklist_id"), rs.getString("title"), rs.getInt("user_id")));
+            }
+            rs.close();
+            con.close();
+        } catch(SQLException ex) {
+            System.out.println("SQLException:\n"+ex.toString());
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Er is een probleem met de database. Probeer het later opnieuw"); // TODO: jlabel error reporting instead of dialog
+        }
+        return resultArrayList;
+
+    }
+
+    public ArrayList<Track> selectAllTracks(){
+        ArrayList<Track> resultArrayList = new ArrayList<>();
+        try {
+            con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
+
+            ps = con.prepareStatement("SELECT * FROM track");
+            rs = ps.executeQuery();
+            rsmd = rs.getMetaData();
+            while (rs.next()) {
+                resultArrayList.add(new Track(rs.getInt("track_id"), rs.getString("artist_name"), rs.getString("title"), rs.getDouble("length"), rs.getString("url")));
+            }
+            rs.close();
+            con.close();
+        } catch(SQLException ex) {
+            System.out.println("SQLException:\n"+ex.toString());
+            ex.printStackTrace();
+        }
+
+        return resultArrayList;
+
+    }
+
+
+    public ArrayList<Track> selectTracks(int tracklistId){
+        ArrayList<Track> resultArrayList = new ArrayList<>();
+        try {
+            con = DriverManager.getConnection(MYSQL_URL, dbUserName, dbPassword);
+
+            ps = con.prepareStatement("SELECT * FROM track WHERE track_id IN(SELECT track_id FROM track_tracklist WHERE tracklist_id = ?)");
+            int index = 1;
+            ps.setInt(index++, tracklistId);
+            rs = ps.executeQuery();
+            rsmd = rs.getMetaData();
+            while (rs.next()) {
+                resultArrayList.add(new Track(rs.getInt("track_id"), rs.getString("artist_name"), rs.getString("title"), rs.getDouble("length"), rs.getString("url")));
+            }
+            rs.close();
+            con.close();
+        } catch(SQLException ex) {
+            System.out.println("SQLException:\n"+ex.toString());
+            ex.printStackTrace();
+        }
+
+            return resultArrayList;
+
+    }
+
 }
+

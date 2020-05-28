@@ -3,10 +3,13 @@ package nl.ictm4a.domotica;
 /**
  * The user class, used for the logged in user.
  */
+import java.util.ArrayList;
+
 public class User {
     private String username;
     private int userID, heatingInputText, lightingInputText;
     private DatabaseFunction databaseFunction = new DatabaseFunction();
+    private ArrayList<Tracklist> userTracklists;
 
     /**
      * Constructor of the User class, will be called for when user is logged in.
@@ -18,6 +21,7 @@ public class User {
         this.username = username;
         this.heatingInputText = databaseFunction.selectUserChoice("heatValue", userID); //Integer.parseInt(databaseFunction.selectRow("heatValue", "usersetting", "user_id", String.valueOf(getUserID())).get(0));
         this.lightingInputText = databaseFunction.selectUserChoice("ldrValue", userID); //Integer.parseInt(databaseFunction.selectRow("ldrValue", "usersetting", "user_id", String.valueOf(getUserID())).get(0));
+        this.userTracklists = databaseFunction.selectPlaylists(userID);
         // succes login, change screen to main screen
         MainScreenFrame mainScreenFrame = new MainScreenFrame(this); //sends the user to the main screen
         mainScreenFrame.setVisible(true);
@@ -49,6 +53,10 @@ public class User {
      */
     public int getLightingInputText() {
         return lightingInputText;
+    }
+
+    public ArrayList<Tracklist> getUserTracklists(){
+        return userTracklists;
     }
 
     /**
