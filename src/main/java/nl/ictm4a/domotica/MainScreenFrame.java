@@ -16,7 +16,7 @@ public class MainScreenFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         MainScreenPanel mainScreenPanel = new MainScreenPanel(user);
-        MusicPlayerPanel musicPlayerPanel = new MusicPlayerPanel(raspberryPiListener, this);
+        MusicPlayerPanel musicPlayerPanel = new MusicPlayerPanel(raspberryPiListener, this, user);
         add(mainScreenPanel);
         LoggingGraph loggingGraph = new LoggingGraph(user);
         LoggingGraphPanel loggingGraphPanel = new LoggingGraphPanel(250, 250, loggingGraph);

@@ -13,7 +13,7 @@ public class RaspberryPiListener {
     DatabaseFunction databaseFunction = new DatabaseFunction();
     private String lastMessage;
     private double tempValue, humValue, airPressValue;
-    private final boolean debugging = true;
+    private final boolean debugging = false;
     private DataOutputStream dout1;
     private User user;
 
@@ -70,7 +70,6 @@ public class RaspberryPiListener {
 
                 while(receiveMessage(din1) != null) {
                     String data = receiveMessage(din1);
-                    System.out.println(data);
                 }
             }
             catch (Exception e){
