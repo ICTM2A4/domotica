@@ -92,7 +92,7 @@ public class ArduinoListener {
      * @return commPort the port the arduino sends to/from
      */
     private SerialPort setCommPort() {
-        return SerialPort.getCommPort("COM4"); // change this to what your port is
+        return SerialPort.getCommPort("COM3"); // change this to what your port is
     }
 
     /**

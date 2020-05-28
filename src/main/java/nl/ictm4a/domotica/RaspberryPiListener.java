@@ -17,7 +17,7 @@ public class RaspberryPiListener {
     private DataOutputStream dout1;
     private User user;
 
-    private String ipAdress = "192.168.1.81";
+    private String ipAdress = "192.168.1.14";
 
     public RaspberryPiListener(User user){
         this.user = user;

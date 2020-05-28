@@ -125,7 +125,8 @@ public class MusicPlayerPanel extends JPanel implements ActionListener {
 
             //sends a message to the raspberry pi: check RaspberyPiListener for more info
 
-            if(this.currentIndex<this.tracklist.getTrackListTracks().size()-1 && this.currentIndex>0){
+
+            if(this.currentIndex<this.tracklist.getTrackListTracks().size() && this.currentIndex>0){
             this.currentIndex--;
             this.track = this.tracklist.getTrackListTracks().get(this.currentIndex);
             raspberryPiListener.sendMessage("previous," + track.getUrl());
@@ -135,8 +136,6 @@ public class MusicPlayerPanel extends JPanel implements ActionListener {
             }
         }
         if(e.getSource().equals(jbNextSong)){
-
-            raspberryPiListener.sendMessage("next");
             if(this.currentIndex<this.tracklist.getTrackListTracks().size()-1 && this.currentIndex>=0){
             this.currentIndex++;
             this.track = this.tracklist.getTrackListTracks().get(this.currentIndex);

@@ -50,6 +50,12 @@ public class RegisterDialog extends JDialog implements ActionListener {
                     int lastInsertedID = databaseFunction.insertNewUser(jtUsername.getText(), String.valueOf(jpPassword.getPassword()));
                     if (lastInsertedID > 0) {
                         // also have to register user settings, just use the standard input
+                        int playlistId = databaseFunction.insertPlaylist("Eerste lijst", lastInsertedID);
+                        for(int i = 0; i < databaseFunction.selectAllTracks().size(); i++){
+                            System.out.println(databaseFunction.selectAllTracks().get(i).getTrackId());
+                            databaseFunction.insertTracklistTrack(databaseFunction.selectAllTracks().get(i).getTrackId(), playlistId);
+                        }
+
                         lastInsertedID = databaseFunction.insertNewUserSetting(lastInsertedID);
                         if (lastInsertedID > 0) {
                             jtfError.setText("U bent succesvol geregistreerd");

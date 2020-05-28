@@ -75,6 +75,8 @@ public class CreatePlaylistDialog extends JDialog implements ActionListener {
             if(count != 0){
 
                 int tracklistId = dbs.insertPlaylist(jtfPlaylistName.getText(), user.getUserID());
+
+
                 //for each checkbox checked..
                 for(int i = 0; i < trackIds.length; i++){
                     //insert tracklist_tracks
