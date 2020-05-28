@@ -6,6 +6,10 @@ import java.awt.*;
 public class MainScreenFrame extends JFrame {
     RaspberryPiListener raspberryPiListener;
 
+    /**
+     * constructor, in here all the panels are added
+     * @param user information from the user
+     */
     public MainScreenFrame(User user) {
         this.raspberryPiListener = new RaspberryPiListener(user);
 
@@ -22,7 +26,5 @@ public class MainScreenFrame extends JFrame {
         add(mainScreenPanel);
         add(loggingGraphPanel);
         add(musicPlayerPanel);
-
-
     }
 }

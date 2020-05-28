@@ -3,6 +3,10 @@ package nl.ictm4a.domotica;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Is used for the user to set their settings for heating and lighting preferences
+ * This is a JDialog and has to be closed before the user can use any other function of the application
+ */
 public class UserSettingsDialog extends JDialog {
 
     public UserSettingsDialog(JFrame parent, User user) {

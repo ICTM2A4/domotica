@@ -2,14 +2,21 @@ package nl.ictm4a.domotica;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+/**
+ * Painting the graph of the temperature with the desired user choice when heating must be turned on
+ */
 public class LoggingGraphPanel extends JPanel {
-    LoggingGraph loggingGraph;
-    int panelWidth, panelHeight;
+    private LoggingGraph loggingGraph;
+    private int panelWidth, panelHeight;
 
+    /**
+     * Constructor containing information of the panel and a thread that updates the drawing of the panel each 1000 milliseconds
+     * @param frameWidth width of the frame this panel is in
+     * @param frameHeight height of the frame this panel is in
+     * @param loggingGraph information from the loggingGraph class
+     */
     public LoggingGraphPanel(int frameWidth, int frameHeight, LoggingGraph loggingGraph) {
         this.panelWidth = frameWidth-20;
         this.panelHeight = frameHeight-50;
@@ -31,6 +38,10 @@ public class LoggingGraphPanel extends JPanel {
         paintTemperatureLogging.start();
     }
 
+    /**
+     * painting start
+     * @param graphics graphics component
+     */
     public void paintComponent(Graphics graphics) {
         // rotate the panel with a 180 degrees so its upside down, this way it makes it easier to paint the line graph
         Graphics2D g = (Graphics2D) graphics;
@@ -42,6 +53,12 @@ public class LoggingGraphPanel extends JPanel {
         paintTemperatureLogging(g, x, y);
     }
 
+    /**
+     * Method for painting the temperature logging and user choice, in case other measurements has to be logged as well
+     * @param g Graphics2D component, used for flipping the screen with 180 degrees
+     * @param x used for flipping the screen with 180 degrees
+     * @param y used for flipping the screen with 180 degrees
+     */
     public void paintTemperatureLogging(Graphics2D g, int x, int y) {
         //setBackground(Color.RED);
         //50

@@ -10,14 +10,16 @@ public class MainScreenPanel extends JPanel implements ActionListener {
     private int jlTemperatureValue, jlAirPressureValue, jlAirMoistureValue;
     public static boolean jlHeatingStatus, jlLightingStatus;
     private JButton jbSettings;
-    MainScreenFrame mainScreenFrame;
-    User user;
+    private MainScreenFrame mainScreenFrame;
+    private User user;
+    private MusicPlayerPanel musicPlayerPanel;
+    private ArduinoListener arduinoListener;
+    private RaspberryPiListener raspberryPiListener;
 
-    MusicPlayerPanel musicPlayerPanel;
-    ArduinoListener arduinoListener;
-    RaspberryPiListener raspberryPiListener;
-
-
+    /**
+     * creates a frame and puts in all the panels
+     * @param user user information
+     */
     public MainScreenPanel(User user) {
         this.user = user;
         this.arduinoListener = new ArduinoListener(user, raspberryPiListener);
@@ -37,14 +39,26 @@ public class MainScreenPanel extends JPanel implements ActionListener {
         jlDummy = uiElement.addLabel(" ", 0, 9);//quick and dirty whitespace
     }
 
+    /**
+     *
+     * @return aan or uit, on or off, is the lighting on?
+     */
     public static String getLightingStatus() {
         return (jlLightingStatus) ? "aan" : "uit";
     }
 
+    /**
+     *
+     * @return aan or uit, on or off, is the heating on?
+     */
     public static String getHeatingStatus() {
         return (jlHeatingStatus) ? "aan" : "uit";
     }
 
+    /**
+     * actionperformed on buttons
+     * @param e actionevent
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbSettings) {

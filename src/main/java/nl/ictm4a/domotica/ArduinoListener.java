@@ -3,8 +3,6 @@ package nl.ictm4a.domotica;
 import com.fazecast.jSerialComm.SerialPort;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -16,14 +14,17 @@ import java.util.Scanner;
  * We believe this is better to prevent a lot of inserts each #milliseconds and that it's only needed to log the changes.
  */
 public class ArduinoListener {
-    DatabaseFunction databaseFunction = new DatabaseFunction();
-    User user;
-    RaspberryPiListener raspberryPiListener;
+    private DatabaseFunction databaseFunction = new DatabaseFunction();
+    private User user;
+    private RaspberryPiListener raspberryPiListener;
     private int ldrValue = 0;
+    private static OutputStream outputStream;
 
-
-    static OutputStream outputStream;
-
+    /**
+     * constructor, also includes a thread to repaint the temperature line graph
+     * @param user user
+     * @param raspberryPiListener information from the raspberrypilistener
+     */
     public ArduinoListener(User user, RaspberryPiListener raspberryPiListener) {
         this.user = user;
         this.raspberryPiListener = raspberryPiListener;
@@ -31,7 +32,6 @@ public class ArduinoListener {
         Thread arduinoListener = new Thread(() -> { // this is a thread, it runs along other threads separately at the same time
             SerialPort port = setCommPort();
             if(port.openPort()) { // port is open (not in use)
-                //System.out.println(port.getSystemPortName() + " port is open.");
                 sleepFunction(5000); // a small sleep after opening the port, this seems to solve some issues for stuff not being ran
                 scanArduino(port);
             } else {
@@ -41,6 +41,11 @@ public class ArduinoListener {
         arduinoListener.start(); // start the thread
     }
 
+    /**
+     * Turns the LEDs (red = heating, green = lighting) on or off depending on the status.
+     * Also reads for incoming message (LDR-sensor value) from the Arduino
+     * @param port the port of the PC where the Arduino is plugged into
+     */
     private void scanArduino(SerialPort port) {
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0); // In this mode, a call to any of the read() or readBytes() methods will block until the number of milliseconds specified by the newReadTimeout parameter has elapsed or at least 1 byte of data can be read.
         Scanner data = new Scanner(port.getInputStream()); // scanner is for incoming information (values from the sensors)
@@ -70,6 +75,10 @@ public class ArduinoListener {
         }
     }
 
+    /**
+     * sleep function
+     * @param ms milliseconds how long the sleep should be
+     */
     private void sleepFunction(int ms) {
         try {
             Thread.sleep(ms);
@@ -78,10 +87,22 @@ public class ArduinoListener {
         }
     }
 
+    /**
+     * setCommPort sets the com port, making this automaticly was a feature but did not have enough time
+     * @return commPort the port the arduino sends to/from
+     */
     private SerialPort setCommPort() {
         return SerialPort.getCommPort("COM4"); // change this to what your port is
     }
 
+    /**
+     * Sends messages to the Arduino (to turn LEDs on/off)
+     * 1 = turn green on
+     * 2 = turn green off
+     * 3 = turn red on
+     * 4 = turn red off
+     * @param message message to be sent (1, 2, 3 or 4)
+     */
     public void sendToArduino(String message) {
         try {
             outputStream.write(message.getBytes());
@@ -91,6 +112,12 @@ public class ArduinoListener {
         }
     }
 
+    /**
+     * inserts the logging of the heating and its status (is it turned on or not)
+     * @param sensorID 1 = heating sensor
+     * @param value measured temperature value from the raspberry pi
+     * @param status is it on (1) or off (0)?
+     */
     public void insertLogging(int sensorID, int value, int status) {
         databaseFunction.insertLogging("logging","sensor_id","value","datetime","status", "user_id",sensorID, value, databaseFunction.getCurrentDateTime(),status, user.getUserID());
     }

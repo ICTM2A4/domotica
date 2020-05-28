@@ -5,13 +5,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel for the settings where the user can change his settings
+ */
 public class UserSettingsPanel extends JPanel implements ActionListener {
     private JLabel jlHeatingQuestion, jlHeatingAnswerLeft, jlHeatingAnswerRight, jlLightingQuestion, jlLightingAnswerLeft, jlLightingAnswerRight, jlDummy, jlError;
     private JTextField jtfHeatingInput, jtfLightingInput;
     private JButton jbSave, jbCancel;
-    UserSettingsDialog userSettingsDialog;
-    User user;
+    private UserSettingsDialog userSettingsDialog;
+    private User user;
 
+    /**
+     * constructor
+     * @param userSettingsDialog the parent
+     * @param user User
+     */
     public UserSettingsPanel(UserSettingsDialog userSettingsDialog, User user) {
         this.userSettingsDialog = userSettingsDialog;
         this.user = user;
@@ -37,9 +45,12 @@ public class UserSettingsPanel extends JPanel implements ActionListener {
         jlError.setForeground(Color.RED);
     }
 
+    /**
+     * actionPerformed for the buttons
+     * @param e actionevent
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO add functions for the buttons
         if(e.getSource() == jbSave) {
             // is the input changed//filled in and only integers?
             if(jtfHeatingInput.getText().length() > 0 && jtfLightingInput.getText().length() > 0) { // filled?
